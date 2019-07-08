@@ -1,6 +1,7 @@
 module DunklZernikeExpansions
 
 import Base: +, -, *, /, ==, isapprox
+import Jacobi:jacobi
 
 export DZFun, DZParam, DZPoly
 
@@ -177,5 +178,43 @@ function raise(f::DZFun)
 	DZFun(outκ, N, outcoefs)
 end
 
+######################################################
 
+"""
+Pochhammer symbol ``(x)_n = \\frac{\\Gamma(x+n)}{\\Gamma(x)}`` for the rising factorial.
+Taken from https://github.com/JuliaApproximation/FastTransforms.jl/blob/master/src/specialfunctions.jl#L33
+"""
+function pochhammer(x::Number,n::Integer)
+    ret = one(x)
+    if n≥0
+        for i=0:n-1
+            ret *= x+i
+        end
+    else
+        ret /= pochhammer(x+n,-n)
+    end
+    ret
+end
+
+pochhammer(x::Number,n::Number) = isinteger(n) ? pochhammer(x,Int(n)) : ogamma(x)/ogamma(x+n)
+
+function pochhammer(x::Number,n::UnitRange{T}) where T<:Real
+    ret = Vector{promote_type(typeof(x),T)}(length(n))
+    ret[1] = pochhammer(x,first(n))
+    for i=2:length(n)
+        ret[i] = (x+n[i]-1)*ret[i-1]
+    end
+    ret
+end
+
+"""
+Generalized Gegenbauer
+"""
+function genGeg(x::Number,n::Integer,lam::Number,mu::Number)
+	if iseven(n)
+		return pochhammer(lam+mu,n÷2)/pochhammer(mu+0.5,n÷2)*jacobi(2x^2-1,n÷2,lam-0.5,mu-0.5)
+	else
+		return pochhammer(lam+mu,(n+1)÷2)/pochhammer(mu+0.5,(n+1)÷2)*x*jacobi(2x^2-1,(n-1)÷2,lam-0.5,mu+0.5)
+	end
+end
 end # module
