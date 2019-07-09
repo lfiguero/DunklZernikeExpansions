@@ -24,3 +24,18 @@ g2 = DZPoly((-1/2,-1/3,0),2,1,true)
 g3 = DZPoly([-1/2,-1/3,0],2,1,true)
 @assert g1==g2
 @assert g1==g3
+
+
+# Test raise via evalDZ
+points = [randn(2) for i=1:100]
+parameters = [10*rand(3)-Array([1.0,1.0,1.0]) for i = 1:100]
+d = 20
+v = randn(DunklZernikeExpansions.polyDim(d))
+
+for param in parameters 
+	f = DZFun((param[1],param[2],param[3]),d,v)
+	rf = DunklZernikeExpansions.raise(f)
+	for point in points
+		@assert evalDZ(f,point[1],point[2]) ≈ evalDZ(rf,point[1],point[2])
+	end
+end
