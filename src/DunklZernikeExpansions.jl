@@ -3,7 +3,7 @@ module DunklZernikeExpansions
 import Base: +, -, *, /, ==, isapprox
 import Jacobi:jacobi
 
-export DZFun, DZParam, DZPoly
+export DZFun, DZParam, DZPoly, evalDZ
 
 function inferDegree(l::Int64)
 	# Given l it returns two integers; the first one is the lowest integer n such that (n+1)(n+2)÷2 ≥ l;
@@ -217,4 +217,27 @@ function genGeg(x::Number,n::Integer,lam::Number,mu::Number)
 		return pochhammer(lam+mu,(n+1)÷2)/pochhammer(mu+0.5,(n+1)÷2)*x*jacobi(2x^2-1,(n-1)÷2,lam-0.5,mu+0.5)
 	end
 end
+
+"""
+Evaluate DZFun
+"""
+function evalDZ(f::DZFun,x::Number,y::Number)
+	out = 0.0
+	coefficients = f.coefficients
+	α = f.κ.α
+	γ1 = f.κ.γ1
+	γ2 = f.κ.γ2
+	r = sqrt(x^2+y^2)
+	t = angle(x+y*im)
+	for j = 1:length(coefficients)
+		(m,n,even) = inversepairing(j)
+		if even
+			out += coefficients[j]*r^m*genGeg(cos(t),m,γ2/2,γ1/2)*jacobi(2r^2-1,n,α,m+(γ1+γ2)/2)
+		else
+			out += coefficients[j]*r^m*sin(t)*genGeg(cos(t),m-1,γ2/2+1,γ1/2)*jacobi(2r^2-1,n,α,m+(γ1+γ2)/2)
+		end
+	end
+	out
+end
+
 end # module
