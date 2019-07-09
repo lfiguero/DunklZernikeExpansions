@@ -2,3 +2,6 @@ name = "DunklZernikeExpansions"
 uuid = "b85f42c6-945a-11e9-0b7f-577d4b07ff0d"
 authors = ["Leonardo Figueroa <leonardo@leonardofigueroa.org>"]
 version = "0.1.0"
+
+[deps]
+Jacobi = "83f21c0b-4282-5fbc-9e3f-f6da3d2e584c"
