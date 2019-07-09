@@ -227,14 +227,14 @@ function evalDZ(f::DZFun,x::Number,y::Number)
 	α = f.κ.α
 	γ1 = f.κ.γ1
 	γ2 = f.κ.γ2
-	r = sqrt(x^2+y^2)
+	r2 = x^2+y^2
 	t = angle(x+y*im)
 	for j = 1:length(coefficients)
 		(m,n,even) = inversepairing(j)
 		if even
-			out += coefficients[j]*r^m*genGeg(cos(t),m,γ2/2,γ1/2)*jacobi(2r^2-1,n,α,m+(γ1+γ2)/2)
+			out += coefficients[j]*r2^(m/2)*genGeg(cos(t),m,γ2/2,γ1/2)*jacobi(2r2-1,n,α,m+(γ1+γ2)/2)
 		else
-			out += coefficients[j]*r^m*sin(t)*genGeg(cos(t),m-1,γ2/2+1,γ1/2)*jacobi(2r^2-1,n,α,m+(γ1+γ2)/2)
+			out += coefficients[j]*r2^(m/2)*sin(t)*genGeg(cos(t),m-1,γ2/2+1,γ1/2)*jacobi(2r2-1,n,α,m+(γ1+γ2)/2)
 		end
 	end
 	out
