@@ -228,7 +228,7 @@ function evalDZ(f::DZFun,x::Number,y::Number)
 	γ1 = f.κ.γ1
 	γ2 = f.κ.γ2
 	r2 = x^2+y^2
-	t = angle(x+y*im)
+	t = atan(y,x)
 	for j = 1:length(coefficients)
 		(m,n,even) = inversepairing(j)
 		if even
