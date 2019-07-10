@@ -1,8 +1,9 @@
 module DunklZernikeExpansions
 
 import Base: +, -, *, /, ==, isapprox
+import Jacobi:jacobi
 
-export DZFun, DZParam, DZPoly
+export DZFun, DZParam, DZPoly, evalDZ
 
 function inferDegree(l::Int64)
 	# Given l it returns two integers; the first one is the lowest integer n such that (n+1)(n+2)÷2 ≥ l;
@@ -177,5 +178,77 @@ function raise(f::DZFun)
 	DZFun(outκ, N, outcoefs)
 end
 
+######################################################
+
+"""
+Pochhammer symbol ``(x)_n = \\frac{\\Gamma(x+n)}{\\Gamma(x)}`` for the rising factorial.
+Taken from FastTransforms.jl under the MIT "Expat" License:
+
+    Copyright (c) 2016-2019: Richard Mikael Slevinsky and other contributors:
+
+    https://github.com/JuliaApproximation/FastTransforms.jl/graphs/contributors
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+"""
+function pochhammer(x::Number,n::Integer)
+    ret = one(x)
+    if n≥0
+        for i=0:n-1
+            ret *= x+i
+        end
+    else
+        ret /= pochhammer(x+n,-n)
+    end
+    ret
+end
+
+pochhammer(x::Number,n::Number) = isinteger(n) ? pochhammer(x,Int(n)) : ogamma(x)/ogamma(x+n)
+
+function pochhammer(x::Number,n::UnitRange{T}) where T<:Real
+    ret = Vector{promote_type(typeof(x),T)}(length(n))
+    ret[1] = pochhammer(x,first(n))
+    for i=2:length(n)
+        ret[i] = (x+n[i]-1)*ret[i-1]
+    end
+    ret
+end
+
+"""
+Generalized Gegenbauer
+"""
+function genGeg(x::Number,n::Integer,lam::Number,mu::Number)
+	if iseven(n)
+		return pochhammer(lam+mu,n÷2)/pochhammer(mu+0.5,n÷2)*jacobi(2x^2-1,n÷2,lam-0.5,mu-0.5)
+	else
+		return pochhammer(lam+mu,(n+1)÷2)/pochhammer(mu+0.5,(n+1)÷2)*x*jacobi(2x^2-1,(n-1)÷2,lam-0.5,mu+0.5)
+	end
+end
+
+"""
+Evaluate DZFun
+"""
+function evalDZ(f::DZFun,x::Number,y::Number)
+	out = 0.0
+	coefficients = f.coefficients
+	α = f.κ.α
+	γ1 = f.κ.γ1
+	γ2 = f.κ.γ2
+	r2 = x^2+y^2
+	t = atan(y,x)
+	for j = 1:length(coefficients)
+		(m,n,even) = inversepairing(j)
+		if even
+			out += coefficients[j]*r2^(m/2)*genGeg(cos(t),m,γ2/2,γ1/2)*jacobi(2r2-1,n,α,m+(γ1+γ2)/2)
+		else
+			out += coefficients[j]*r2^(m/2)*sin(t)*genGeg(cos(t),m-1,γ2/2+1,γ1/2)*jacobi(2r2-1,n,α,m+(γ1+γ2)/2)
+		end
+	end
+	out
+end
 
 end # module
