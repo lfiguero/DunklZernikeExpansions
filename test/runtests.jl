@@ -39,3 +39,19 @@ for param in parameters
 		@assert evalDZ(f,point[1],point[2]) ≈ evalDZ(rf,point[1],point[2])
 	end
 end
+
+# Test DunklX and DunklY via raise
+for param in parameters
+	f = DZFun((param[1],param[2],param[3]),d,v)
+	
+	DxR = DunklZernikeExpansions.DunklX(DunklZernikeExpansions.raise(f))
+	RDx = DunklZernikeExpansions.raise(DunklZernikeExpansions.DunklX(f))
+	
+	DyR = DunklZernikeExpansions.DunklY(DunklZernikeExpansions.raise(f))
+	RDy = DunklZernikeExpansions.raise(DunklZernikeExpansions.DunklY(f))
+
+	for point in points
+		@assert evalDZ(DxR,point[1],point[2]) ≈ evalDZ(RDx,point[1],point[2])
+		@assert evalDZ(DyR,point[1],point[2]) ≈ evalDZ(RDy,point[1],point[2])
+	end
+end
