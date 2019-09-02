@@ -220,51 +220,51 @@ function D1even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 end
 function E1even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		(m+γ1+γ2)(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
+		(m+γ1+γ2)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
 	else
-		(m+1)(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
+		(m+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
 	end
 end
 function D2even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		-(m+γ1-1)(2m+2n+γ1+γ2)/(2m+γ1+γ2)
+		-(m+γ1-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)
 	else
-		-(m+γ1)(2m+2n+γ1+γ2)/(2m+γ1+γ2)
+		-(m+γ1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)
 	end
 end
 function E2even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		(m+γ1+γ2)(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
+		(m+γ1+γ2)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
 	else
-		(m+γ1+γ2+1)(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
+		(m+γ1+γ2+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
 	end
 end
 function D1odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		(m+γ1-1)(2m+2n+γ1+γ2)/(2m+γ1+γ2)
+		(m+γ1-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)
 	else
-		(m+γ2)(2m+2n+γ1+γ2)/(2m+γ1+γ2)
+		(m+γ2)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)
 	end
 end
 function E1odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		m(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
+		m*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
 	else
-		(m+γ1+γ2+1)(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
+		(m+γ1+γ2+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
 	end
 end
 function D2odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		(m+γ2-1)(2m+2n+γ1+γ2)/(2m+γ1+γ2)
+		(m+γ2-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)
 	else
-		(m+γ2)(2m+2n+γ1+γ2)/(2m+γ1+γ2)
+		(m+γ2)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)
 	end
 end
 function E2odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		-m(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
+		-m*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
 	else
-		-(m+1)(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
+		-(m+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
 	end
 end
 F1even(n::Integer,α::Float64,γ1::Float64,γ2::Float64) = 2n+2α+γ1+γ2+2
@@ -283,7 +283,7 @@ function DunklX(f::DZFun)
 	for n=0:(N-1)÷2
 		ixMN = pairing(m,n,true) # Index associated to (0,n,Even)
 		ixMpN = pairing(m+1,n,true) # Index associated to (1,n,Even)
-		OutCoeff[ixMN] += OrigCoeff[ixMpN]*D1even(m+1,n,α,γ1,γ2)
+		OutCoeff[ixMN] = OrigCoeff[ixMpN]*D1even(m+1,n,α,γ1,γ2)
 	end
 
 	m = 1
@@ -291,25 +291,26 @@ function DunklX(f::DZFun)
 		ixMN = pairing(m,n,true) # Index associated to (1,n,Even)
 		ixMpN = pairing(m+1,n,true) # Index associated to (2,n,Even)
 		ixMmNp = pairing(m-1,n+1,true) # Index associated to (0,n+1,Even)
-		OutCoeff[ixMN] += OrigCoeff[ixMpN]*D1even(m+1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*F1even(n+1,α,γ1,γ2)
+		OutCoeff[ixMN] = OrigCoeff[ixMpN]*D1even(m+1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*F1even(n+1,α,γ1,γ2)
 
 		ixMN = pairing(m,n,false) # Index associated to (1,n,Odd)
 		ixMpN = pairing(m+1,n,false) # Index associated to (2,n,Odd)
-		OutCoeff[ixMN] += OrigCoeff[ixMŃ]*D1odd(m+1,n,α,γ1,γ2)
+		OutCoeff[ixMN] = OrigCoeff[ixMpN]*D1odd(m+1,n,α,γ1,γ2)
 	end
 	for m=2:(N-2)
-		for n=0:(N-2-m)÷2
+		for n=0:(N-1-m)÷2
 			ixMN = pairing(m,n,true) # Index associated to (m,n,Even)
 			ixMpN = pairing(m+1,n,true) # Index associated to (m+1,n,Even)
 			ixMmNp = pairing(m-1,n+1,true) # Index associated to (m-1,n+1,Even)
-			OutCoeff[ixMN] += OrigCoeff[ixMpN]*D1even(m+1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*E1even(m-1,n+1,α,γ1,γ2)
+			OutCoeff[ixMN] = OrigCoeff[ixMpN]*D1even(m+1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*E1even(m-1,n+1,α,γ1,γ2)
 
 			ixMN = pairing(m,n,false) # Index associated to (m,n,Odd)
 			ixMpN = pairing(m+1,n,false) # Index associated to (m+1,n,Odd)
 			ixMmNp = pairing(m-1,n+1,false) # Index associated to (m-1,n+1,Odd)
-			OutCoeff[ixMN] += OrigCoeff[ixMpN]*D1odd(m+1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*E1odd(m-1,n+1,α,γ1,γ2)
+			OutCoeff[ixMN] = OrigCoeff[ixMpN]*D1odd(m+1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*E1odd(m-1,n+1,α,γ1,γ2)
 		end
 	end
+	DZFun([γ1,γ2,α+1],N-1,OutCoeff)
 end
 
 end # module
