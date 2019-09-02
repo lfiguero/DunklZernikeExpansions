@@ -313,4 +313,48 @@ function DunklX(f::DZFun)
 	DZFun([γ1,γ2,α+1],N-1,OutCoeff)
 end
 
+function DunklY(f::DZFun)
+	OrigCoeff = f.coefficients
+	α = f.κ.α
+	γ1 = f.κ.γ1
+	γ2 = f.κ.γ2
+	N = f.degree
+
+	OutCoeff = zeros(polyDim(N-1))
+	
+	m = 0
+	for n=0:(N-1)÷2
+		ixMN = pairing(m,n,true) # Index associated to (0,n,Even)
+		ixMpN = pairing(m+1,n,false) # Index associated to (1,n,Odd)
+		OutCoeff[ixMN] = OrigCoeff[ixMpN]*D2odd(m+1,n,α,γ1,γ2)
+	end
+
+	m = 1
+	for n=0:(N-1-m)÷2
+		ixMN = pairing(m,n,true) # Index associated to (1,n,Even)
+		ixMpN = pairing(m+1,n,false) # Index associated to (2,n,odd)
+		OutCoeff[ixMN] = OrigCoeff[ixMpN]*D2odd(m+1,n,α,γ1,γ2)
+
+		ixMN = pairing(m,n,false) # Index associated to (1,n,Odd)
+		ixMpN = pairing(m+1,n,true) # Index associated to (2,n,Even)
+		ixMmNp = pairing(m-1,n+1,true) # Index assoaciated to (0,n+1,Even)
+		OutCoeff[ixMN] = OrigCoeff[ixMpN]*D2even(m+1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*F2even(n+1,α,γ1,γ2)
+	end
+	for m=2:(N-2)
+		for n=0:(N-1-m)÷2
+			ixMN = pairing(m,n,true) # Index associated to (m,n,Even)
+			ixMpN = pairing(m+1,n,false) # Index associated to (m+1,n,Odd)
+			ixMmNp = pairing(m-1,n+1,false) # Index associated to (m-1,n+1,Odd)
+			OutCoeff[ixMN] = OrigCoeff[ixMpN]*D2odd(m+1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*E2odd(m-1,n+1,α,γ1,γ2)
+
+			ixMN = pairing(m,n,false) # Index associated to (m,n,Odd)
+			ixMpN = pairing(m+1,n,true) # Index associated to (m+1,n,Even)
+			ixMmNp = pairing(m-1,n+1,true) # Index associated to (m-1,n+1,Even)
+			OutCoeff[ixMN] = OrigCoeff[ixMpN]*D2even(m+1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*E2even(m-1,n+1,α,γ1,γ2)
+		end
+	end
+	DZFun([γ1,γ2,α+1],N-1,OutCoeff)
+end
+
+
 end # module
