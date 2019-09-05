@@ -178,54 +178,14 @@ function raise(f::DZFun)
 	DZFun(outκ, N, outcoefs)
 end
 
-######################################################
-
-"""
-Pochhammer symbol ``(x)_n = \\frac{\\Gamma(x+n)}{\\Gamma(x)}`` for the rising factorial.
-Taken from FastTransforms.jl under the MIT "Expat" License:
-
-    Copyright (c) 2016-2019: Richard Mikael Slevinsky and other contributors:
-
-    https://github.com/JuliaApproximation/FastTransforms.jl/graphs/contributors
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-"""
-function pochhammer(x::Number,n::Integer)
-    ret = one(x)
-    if n≥0
-        for i=0:n-1
-            ret *= x+i
-        end
-    else
-        ret /= pochhammer(x+n,-n)
-    end
-    ret
-end
-
-pochhammer(x::Number,n::Number) = isinteger(n) ? pochhammer(x,Int(n)) : ogamma(x)/ogamma(x+n)
-
-function pochhammer(x::Number,n::UnitRange{T}) where T<:Real
-    ret = Vector{promote_type(typeof(x),T)}(length(n))
-    ret[1] = pochhammer(x,first(n))
-    for i=2:length(n)
-        ret[i] = (x+n[i]-1)*ret[i-1]
-    end
-    ret
-end
-
 """
 Generalized Gegenbauer
 """
 function genGeg(x::Number,n::Integer,lam::Number,mu::Number)
 	if iseven(n)
-		return pochhammer(lam+mu,n÷2)/pochhammer(mu+0.5,n÷2)*jacobi(2x^2-1,n÷2,lam-0.5,mu-0.5)
+		return jacobi(2x^2-1,n÷2,lam-0.5,mu-0.5)
 	else
-		return pochhammer(lam+mu,(n+1)÷2)/pochhammer(mu+0.5,(n+1)÷2)*x*jacobi(2x^2-1,(n-1)÷2,lam-0.5,mu+0.5)
+		return x*jacobi(2x^2-1,(n-1)÷2,lam-0.5,mu+0.5)
 	end
 end
 
@@ -250,5 +210,151 @@ function evalDZ(f::DZFun,x::Number,y::Number)
 	end
 	out
 end
+
+function D1even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
+	if iseven(m)
+		(m+γ2-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)
+	else
+		(m+γ1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)
+	end
+end
+function E1even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
+	if iseven(m)
+		(m+γ1+γ2)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
+	else
+		(m+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
+	end
+end
+function D2even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
+	if iseven(m)
+		-(m+γ1-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)
+	else
+		-(m+γ1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)
+	end
+end
+function E2even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
+	if iseven(m)
+		(m+γ1+γ2)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
+	else
+		(m+γ1+γ2+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
+	end
+end
+function D1odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
+	if iseven(m)
+		(m+γ1-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)
+	else
+		(m+γ2)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)
+	end
+end
+function E1odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
+	if iseven(m)
+		m*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
+	else
+		(m+γ1+γ2+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
+	end
+end
+function D2odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
+	if iseven(m)
+		(m+γ2-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)
+	else
+		(m+γ2)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)
+	end
+end
+function E2odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
+	if iseven(m)
+		-m*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
+	else
+		-(m+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)
+	end
+end
+F1even(n::Integer,α::Float64,γ1::Float64,γ2::Float64) = 2n+2α+γ1+γ2+2
+F2even(n::Integer,α::Float64,γ1::Float64,γ2::Float64) = 2n+2α+γ1+γ2+2
+
+function DunklX(f::DZFun)
+	OrigCoeff = f.coefficients
+	α = f.κ.α
+	γ1 = f.κ.γ1
+	γ2 = f.κ.γ2
+	N = f.degree
+
+	OutCoeff = zeros(polyDim(N-1))
+	
+	m = 0
+	for n=0:(N-1)÷2
+		ixMN = pairing(m,n,true) # Index associated to (0,n,Even)
+		ixMpN = pairing(m+1,n,true) # Index associated to (1,n,Even)
+		OutCoeff[ixMN] = OrigCoeff[ixMpN]*D1even(m+1,n,α,γ1,γ2)
+	end
+
+	m = 1
+	for n=0:(N-1-m)÷2
+		ixMN = pairing(m,n,true) # Index associated to (1,n,Even)
+		ixMpN = pairing(m+1,n,true) # Index associated to (2,n,Even)
+		ixMmNp = pairing(m-1,n+1,true) # Index associated to (0,n+1,Even)
+		OutCoeff[ixMN] = OrigCoeff[ixMpN]*D1even(m+1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*F1even(n+1,α,γ1,γ2)
+
+		ixMN = pairing(m,n,false) # Index associated to (1,n,Odd)
+		ixMpN = pairing(m+1,n,false) # Index associated to (2,n,Odd)
+		OutCoeff[ixMN] = OrigCoeff[ixMpN]*D1odd(m+1,n,α,γ1,γ2)
+	end
+	for m=2:(N-2)
+		for n=0:(N-1-m)÷2
+			ixMN = pairing(m,n,true) # Index associated to (m,n,Even)
+			ixMpN = pairing(m+1,n,true) # Index associated to (m+1,n,Even)
+			ixMmNp = pairing(m-1,n+1,true) # Index associated to (m-1,n+1,Even)
+			OutCoeff[ixMN] = OrigCoeff[ixMpN]*D1even(m+1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*E1even(m-1,n+1,α,γ1,γ2)
+
+			ixMN = pairing(m,n,false) # Index associated to (m,n,Odd)
+			ixMpN = pairing(m+1,n,false) # Index associated to (m+1,n,Odd)
+			ixMmNp = pairing(m-1,n+1,false) # Index associated to (m-1,n+1,Odd)
+			OutCoeff[ixMN] = OrigCoeff[ixMpN]*D1odd(m+1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*E1odd(m-1,n+1,α,γ1,γ2)
+		end
+	end
+	DZFun([γ1,γ2,α+1],N-1,OutCoeff)
+end
+
+function DunklY(f::DZFun)
+	OrigCoeff = f.coefficients
+	α = f.κ.α
+	γ1 = f.κ.γ1
+	γ2 = f.κ.γ2
+	N = f.degree
+
+	OutCoeff = zeros(polyDim(N-1))
+	
+	m = 0
+	for n=0:(N-1)÷2
+		ixMN = pairing(m,n,true) # Index associated to (0,n,Even)
+		ixMpN = pairing(m+1,n,false) # Index associated to (1,n,Odd)
+		OutCoeff[ixMN] = OrigCoeff[ixMpN]*D2odd(m+1,n,α,γ1,γ2)
+	end
+
+	m = 1
+	for n=0:(N-1-m)÷2
+		ixMN = pairing(m,n,true) # Index associated to (1,n,Even)
+		ixMpN = pairing(m+1,n,false) # Index associated to (2,n,odd)
+		OutCoeff[ixMN] = OrigCoeff[ixMpN]*D2odd(m+1,n,α,γ1,γ2)
+
+		ixMN = pairing(m,n,false) # Index associated to (1,n,Odd)
+		ixMpN = pairing(m+1,n,true) # Index associated to (2,n,Even)
+		ixMmNp = pairing(m-1,n+1,true) # Index assoaciated to (0,n+1,Even)
+		OutCoeff[ixMN] = OrigCoeff[ixMpN]*D2even(m+1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*F2even(n+1,α,γ1,γ2)
+	end
+	for m=2:(N-2)
+		for n=0:(N-1-m)÷2
+			ixMN = pairing(m,n,true) # Index associated to (m,n,Even)
+			ixMpN = pairing(m+1,n,false) # Index associated to (m+1,n,Odd)
+			ixMmNp = pairing(m-1,n+1,false) # Index associated to (m-1,n+1,Odd)
+			OutCoeff[ixMN] = OrigCoeff[ixMpN]*D2odd(m+1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*E2odd(m-1,n+1,α,γ1,γ2)
+
+			ixMN = pairing(m,n,false) # Index associated to (m,n,Odd)
+			ixMpN = pairing(m+1,n,true) # Index associated to (m+1,n,Even)
+			ixMmNp = pairing(m-1,n+1,true) # Index associated to (m-1,n+1,Even)
+			OutCoeff[ixMN] = OrigCoeff[ixMpN]*D2even(m+1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*E2even(m-1,n+1,α,γ1,γ2)
+		end
+	end
+	DZFun([γ1,γ2,α+1],N-1,OutCoeff)
+end
+
 
 end # module
