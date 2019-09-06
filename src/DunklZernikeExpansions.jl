@@ -178,6 +178,52 @@ function raise(f::DZFun)
 	DZFun(outκ, N, outcoefs)
 end
 
+function lower(f::DZFun)
+	γ1 = f.κ.γ1
+	γ2 = f.κ.γ2
+	α = f.κ.α - 1 #New α
+	@assert α>-1
+	N = f.degree
+	outκ = DZParam(γ1, γ2, α)
+	origcoefs = f.coefficients
+	outcoefs = zeros(Float64, length(origcoefs))
+	for n = N÷2:-1:0
+		m = 0	
+		poscos = pairing(m,n,true)
+		if n == 0
+			if m+2n>N-2
+				outcoefs[poscos] = origcoefs[poscos]
+			else		
+				poscosup = pairing(m,n+1,true)
+				outcoefs[poscos] = origcoefs[poscos] + (m+n+1+(γ1+γ2)/2)/(m+2n+3+α+(γ1+γ2)/2)*outcoefs[poscosup]
+			end
+		else
+			if m+2n>N-2
+				outcoefs[poscos] = (m+2n+α+(γ1+γ2)/2+1)/(m+n+α+(γ1+γ2)/2+1)*origcoefs[poscos]			
+			else
+				poscosup = pairing(m,n+1,true)
+				outcoefs[poscos] = (m+2n+α+(γ1+γ2)/2+1)/(m+n+α+(γ1+γ2)/2+1)*( origcoefs[poscos] + (m+n+1+(γ1+γ2)/2)/(m+2n+3+α+(γ1+γ2)/2)*outcoefs[poscosup] )
+			end
+		end
+		for m = 1:N-2n
+			if m+2n>N-2
+				poscos = pairing(m,n,true)
+				possin = pairing(m,n,false)
+				outcoefs[poscos] = (m+2n+α+(γ1+γ2)/2+1)/(m+n+α+(γ1+γ2)/2+1)*origcoefs[poscos]
+				outcoefs[possin] = (m+2n+α+(γ1+γ2)/2+1)/(m+n+α+(γ1+γ2)/2+1)*origcoefs[possin]
+			else
+				poscos = pairing(m,n,true)
+				possin = pairing(m,n,false)
+				poscosup = pairing(m,n+1,true)
+				possinup = pairing(m,n+1,false)
+				outcoefs[poscos] = (m+2n+α+(γ1+γ2)/2+1)/(m+n+α+(γ1+γ2)/2+1)*( origcoefs[poscos] + (m+n+1+(γ1+γ2)/2)/(m+2n+3+α+(γ1+γ2)/2)*outcoefs[poscosup] )
+				outcoefs[possin] = (m+2n+α+(γ1+γ2)/2+1)/(m+n+α+(γ1+γ2)/2+1)*( origcoefs[possin] + (m+n+1+(γ1+γ2)/2)/(m+2n+3+α+(γ1+γ2)/2)*outcoefs[possinup] )
+			end
+		end
+	end
+	DZFun(outκ, N, outcoefs)
+end
+
 """
 Generalized Gegenbauer
 """
