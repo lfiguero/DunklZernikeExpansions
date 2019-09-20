@@ -3,7 +3,7 @@ module DunklZernikeExpansions
 import Base: +, -, *, /, ==, isapprox
 import Jacobi:jacobi
 
-export DZFun, DZParam, DZPoly, evalDZ
+export DZFun, DZParam, DZPoly, evalDZ, mbx1
 
 function inferDegree(l::Int64)
 	# Given l it returns two integers; the first one is the lowest integer n such that (n+1)(n+2)÷2 ≥ l;
@@ -411,130 +411,245 @@ end
 
 function G1even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		(m+γ1+γ2)(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ1+γ2)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		(m+1)(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function H1even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		(m+γ1+γ2)(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ1+γ2)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		(m+1)(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)		
+		(m+1)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)		
 	end
 end
 
 function I1even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		(m+γ2-1)(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ2-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		(m+γ1)(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function J1even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		(m+γ2-1)(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ2-1)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		(m+γ1)(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ1)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function G2even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		(m+γ1+γ2)(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ1+γ2)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		(m+γ1+γ2+1)(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ1+γ2+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function H2even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		(m+γ1+γ2)(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ1+γ2)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		(m+γ1+γ2+1)(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ1+γ2+1)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function I2even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		-(m+γ1-1)(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		-(m+γ1-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		-(m+γ1)(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		-(m+γ1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function J2even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		-(m+γ1-1)(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		-(m+γ1-1)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		-(m+γ1)(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		-(m+γ1)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function G1odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		m(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		m*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		(m+γ1+γ2+1)(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ1+γ2+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function H1odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		m(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		m*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		(m+γ1+γ2+1)(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ1+γ2+1)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function I1odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		(m+γ1-1)(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ1-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		(m+γ2)(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ2)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function J1odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		(m+γ1-1)(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ1-1)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		(m+γ2)(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ2)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function G2odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		-m(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		-m*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		-(m+1)(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		-(m+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function H2odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		-m(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		-m*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		-(m+1)(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		-(m+1)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function I2odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		(m+γ2-1)(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ2-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		(m+γ2)(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ2)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function J2odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if iseven(m)
-		(m+γ2-1)(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ2-1)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		(m+γ2)(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+		(m+γ2)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
+end
+
+function mbx1(f::DZFun)
+	OrigCoeff = f.coefficients
+	α = f.κ.α
+	γ1 = f.κ.γ1
+	γ2 = f.κ.γ2
+	N = f.degree
+
+	OutCoeff = zeros(polyDim(N+1))
+
+	# Even part
+
+	m = 0
+	n = 0
+	ixMN = pairing(m,n,true) # Index associated to (0,0,Even)
+	if m+2n≤N-1
+		ixMpN = pairing(m+1,n,true) # Index assoacited to (1,0,Even)
+		OutCoeff[ixMN] = OrigCoeff[ixMpN]*I1even(m+1,n,α,γ1,γ2)
+	else
+		OutCoeff[ixMN] = 0
+	end
+
+	n = 0
+	for m = 1:N+1-2n
+		ixMN = pairing(m,n,true) # Index associated to (m,0,Even)
+		ixMmN = pairing(m-1,n,true) # Index associated to (m-1,0,Even)
+		if m+2n≤N-1
+			ixMmNp = pairing(m-1,n+1,true) # Index associated to (m-1,1,Even)
+			ixMpN = pairing(m+1,n,true) # Index associated to (m+1,n,Even)
+			OutCoeff[ixMN] = OrigCoeff[ixMmN]*G1even(m-1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*H1even(m-1,n+1,α,γ1,γ2) + OrigCoeff[ixMpN]*I1even(m+1,n,α,γ1,γ2)
+		else
+			OutCoeff[ixMN] = OrigCoeff[ixMmN]*G1even(m-1,n,α,γ1,γ2)
+		end
+	end
+
+	m = 0
+	for n = 1:(N+1-m)÷2
+		ixMN = pairing(m,n,true) # Index associated to (0,n,Even)
+		ixMpNm = pairing(m+1,n-1,true) # Index associated to (1,n-1,Even)
+		if m+2n≤N-1
+			ixMpN = pairing(m+1,n,true) # Index associated to (1,n,Even)
+			OutCoeff[ixMN] = OrigCoeff[ixMpN]*I1even(m+1,n,α,γ1,γ2) + OrigCoeff[ixMpNm]*J1even(m+1,n-1,α,γ1,γ2)
+		else
+			OutCoeff[ixMN] = OrigCoeff[ixMpNm]*J1even(m+1,n-1,α,γ1,γ2)
+		end
+	end
+
+	for n = 1:(N+1)÷2
+		for m = 1:N+1-2n
+			ixMN = pairing(m,n,true) # Index associated to (m,n,Even)
+			ixMmN = pairing(m-1,n,true) # Index associated to (m-1,n,Even)
+			ixMpNm = pairing(m+1,n-1,true) # Index associated to (m+1,n-1,Even)
+			if m+2n≤N-1
+				ixMmNp = pairing(m-1,n+1,true) # Index associated to (m-1,n+1,Even)
+				ixMpN = pairing(m+1,n,true) # Index associated to (m+1,n,Even)
+				OutCoeff[ixMN] = OrigCoeff[ixMmN]*G1even(m-1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*H1even(m-1,n+1,α,γ1,γ2) + OrigCoeff[ixMpN]*I1even(m+1,n,α,γ1,γ2) + OrigCoeff[ixMpNm]*J1even(m+1,n-1,α,γ1,γ2)
+			else
+				OutCoeff[ixMN] = OrigCoeff[ixMmN]*G1even(m-1,n,α,γ1,γ2) + OrigCoeff[ixMpNm]*J1even(m+1,n-1,α,γ1,γ2)
+			end
+		end
+	end
+
+	# Odd part
+
+	m = 1
+	n = 0
+	ixMN = pairing(m,n,false) # Index associated to (1,0,Odd)
+	if m+2n≤N-1
+		ixMpN = pairing(m+1,n,false) # Index assoacited to (2,0,Odd)
+		OutCoeff[ixMN] = OrigCoeff[ixMpN]*I1odd(m+1,n,α,γ1,γ2)
+	else
+		OutCoeff[ixMN] = 0
+	end
+
+	n = 0
+	for m = 2:N+1-2n
+		ixMN = pairing(m,n,false) # Index associated to (m,0,Odd)
+		ixMmN = pairing(m-1,n,false) # Index associated to (m-1,0,Odd)
+		if m+2n≤N-1
+			ixMmNp = pairing(m-1,n+1,false) # Index associated to (m-1,1,Odd)
+			ixMpN = pairing(m+1,n,false) # Index associated to (m+1,n,Odd)
+			OutCoeff[ixMN] = OrigCoeff[ixMmN]*G1odd(m-1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*H1odd(m-1,n+1,α,γ1,γ2) + OrigCoeff[ixMpN]*I1odd(m+1,n,α,γ1,γ2)
+		else
+			OutCoeff[ixMN] = OrigCoeff[ixMmN]*G1odd(m-1,n,α,γ1,γ2)
+		end
+	end
+
+	m = 1
+	for n = 1:(N+1-m)÷2
+		ixMN = pairing(m,n,false) # Index associated to (1,n,Odd)
+		ixMpNm = pairing(m+1,n-1,false) # Index associated to (2,n-1,Odd)
+		if m+2n≤N-1
+			ixMpN = pairing(m+1,n,false) # Index associated to (2,n,Odd)
+			OutCoeff[ixMN] = OrigCoeff[ixMpN]*I1odd(m+1,n,α,γ1,γ2) + OrigCoeff[ixMpNm]*J1odd(m+1,n-1,α,γ1,γ2)
+		else
+			OutCoeff[ixMN] = OrigCoeff[ixMpNm]*J1odd(m+1,n-1,α,γ1,γ2)
+		end
+	end
+
+	for n = 1:(N+1)÷2
+		for m = 2:N+1-2n
+			ixMN = pairing(m,n,false) # Index associated to (m,n,Odd)
+			ixMmN = pairing(m-1,n,false) # Index associated to (m-1,n,Odd)
+			ixMpNm = pairing(m+1,n-1,false) # Index associated to (m+1,n-1,Odd)
+			if m+2n≤N-1
+				ixMmNp = pairing(m-1,n+1,false) # Index associated to (m-1,n+1,Odd)
+				ixMpN = pairing(m+1,n,false) # Index associated to (m+1,n,Odd)
+				OutCoeff[ixMN] = OrigCoeff[ixMmN]*G1odd(m-1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*H1odd(m-1,n+1,α,γ1,γ2) + OrigCoeff[ixMpN]*I1odd(m+1,n,α,γ1,γ2) + OrigCoeff[ixMpNm]*J1odd(m+1,n-1,α,γ1,γ2)
+			else
+				OutCoeff[ixMN] = OrigCoeff[ixMmN]*G1odd(m-1,n,α,γ1,γ2) + OrigCoeff[ixMpNm]*J1odd(m+1,n-1,α,γ1,γ2)
+			end
+		end
+	end
+	DZFun([γ1,γ2,α],N+1,OutCoeff)
 end
 
 end # module
