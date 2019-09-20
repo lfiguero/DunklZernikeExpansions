@@ -410,130 +410,130 @@ function DunklY(f::DZFun)
 end
 
 function G1even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
-	if iseven(m)
-		(m+γ1+γ2)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	if isodd(m)
 		(m+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		(m+γ1+γ2)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function H1even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
-	if iseven(m)
-		(m+γ1+γ2)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	if isodd(m)
+		(m+1)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	else
-		(m+1)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)		
+		(m+γ1+γ2)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function I1even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
-	if iseven(m)
-		(m+γ2-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	if isodd(m)
 		(m+γ1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		(m+γ2-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function J1even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
-	if iseven(m)
-		(m+γ2-1)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	if isodd(m)
 		(m+γ1)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		(m+γ2-1)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function G2even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
-	if iseven(m)
-		(m+γ1+γ2)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	if isodd(m)
 		(m+γ1+γ2+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		(m+γ1+γ2)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function H2even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
-	if iseven(m)
-		(m+γ1+γ2)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	if isodd(m)
 		(m+γ1+γ2+1)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		(m+γ1+γ2)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function I2even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
-	if iseven(m)
-		-(m+γ1-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	if isodd(m)
 		-(m+γ1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		-(m+γ1-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function J2even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
-	if iseven(m)
-		-(m+γ1-1)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	if isodd(m)
 		-(m+γ1)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		-(m+γ1-1)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function G1odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
-	if iseven(m)
-		m*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	if isodd(m)
 		(m+γ1+γ2+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		m*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function H1odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
-	if iseven(m)
-		m*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	if isodd(m)
 		(m+γ1+γ2+1)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		m*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function I1odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
-	if iseven(m)
-		(m+γ1-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	if isodd(m)
 		(m+γ2)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		(m+γ1-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function J1odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
-	if iseven(m)
-		(m+γ1-1)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	if isodd(m)
 		(m+γ2)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		(m+γ1-1)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function G2odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
-	if iseven(m)
-		-m*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	if isodd(m)
 		-(m+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		-m*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function H2odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
-	if iseven(m)
-		-m*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	if isodd(m)
 		-(m+1)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		-m*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function I2odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
-	if iseven(m)
-		(m+γ2-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	if isodd(m)
 		(m+γ2)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		(m+γ2-1)*(2m+2n+γ1+γ2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
 function J2odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
-	if iseven(m)
-		(m+γ2-1)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	if isodd(m)
 		(m+γ2)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		(m+γ2-1)*(2n+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
