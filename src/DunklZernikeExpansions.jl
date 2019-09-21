@@ -412,16 +412,22 @@ end
 function G1even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if isodd(m)
 		(m+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	elseif m > 0
 		(m+γ1+γ2)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	elseif n > 0
+		(2m+2n+2α+γ1+γ2+2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		1.0
 	end
 end
 
 function H1even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if isodd(m)
 		(m+1)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	elseif m > 0
 		(m+γ1+γ2)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		(2n+2α)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
@@ -444,16 +450,22 @@ end
 function G2even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if isodd(m)
 		(m+γ1+γ2+1)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	elseif m > 0
 		(m+γ1+γ2)*(2m+2n+2α+γ1+γ2+2)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	elseif n > 0
+		(2m+2n+2α+γ1+γ2+2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		1.0
 	end
 end
 
 function H2even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if isodd(m)
 		(m+γ1+γ2+1)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
-	else
+	elseif m > 0
 		(m+γ1+γ2)*(2n+2α)/(2m+γ1+γ2)/(2m+4n+2α+γ1+γ2+2)
+	else
+		(2n+2α)/(2m+4n+2α+γ1+γ2+2)
 	end
 end
 
