@@ -3,7 +3,7 @@ module DunklZernikeExpansions
 import Base: +, -, *, /, ==, isapprox
 import Jacobi:jacobi
 
-export DZFun, DZParam, DZPoly, evalDZ, mbx1
+export DZFun, DZParam, DZPoly, evalDZ, mbx1, mbx2
 
 function inferDegree(l::Int64)
 	# Given l it returns two integers; the first one is the lowest integer n such that (n+1)(n+2)÷2 ≥ l;
@@ -664,4 +664,95 @@ function mbx1(f::DZFun)
 	DZFun([γ1,γ2,α],N+1,OutCoeff)
 end
 
+function mbx2(f::DZFun)
+	OrigCoeff = f.coefficients
+	α = f.κ.α
+	γ1 = f.κ.γ1
+	γ2 = f.κ.γ2
+	N = f.degree
+
+	OutCoeff = zeros(polyDim(N+1))
+
+	# Even part
+
+	n = 0
+	for m = 0:1
+		ixMN = pairing(m,n,true) # Index associated to (m,0,Even)
+		if m+2n≤N-1
+			ixMpN = pairing(m+1,n,false) # Index associated to (m+1,0,Odd)
+			OutCoeff[ixMN] = OrigCoeff[ixMpN]*I2odd(m+1,n,α,γ1,γ2)
+		else
+			OutCoeff[ixMN] = 0
+		end
+	end
+
+	n = 0
+	for m = 2:N+1-2n
+		ixMN = pairing(m,n,true) # Index associated to (m,0,Even)
+		ixMmN = pairing(m-1,n,false) # Index associated to (m-1,0,Odd)
+		if m+2n≤N-1
+			ixMmNp = pairing(m-1,n+1,false) # Index associated to (m-1,1,Odd)
+			ixMpN = pairing(m+1,n,false) # Index associated to (m+1,n,Odd)
+			OutCoeff[ixMN] = OrigCoeff[ixMmN]*G2odd(m-1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*H2odd(m-1,n+1,α,γ1,γ2) + OrigCoeff[ixMpN]*I2odd(m+1,n,α,γ1,γ2)
+		else
+			OutCoeff[ixMN] = OrigCoeff[ixMmN]*G2odd(m-1,n,α,γ1,γ2)
+		end
+	end
+
+	for m = 0:1
+		for n = 1:(N+1-m)÷2
+			ixMN = pairing(m,n,true) # Index associated to (m,n,Even)
+			ixMpNm = pairing(m+1,n-1,false) # Index associated to (m+1,n-1,Odd)
+			if m+2n≤N-1
+				ixMpN = pairing(m+1,n,false) # Index associated to (m+1,n,Odd)
+				OutCoeff[ixMN] = OrigCoeff[ixMpN]*I2odd(m+1,n,α,γ1,γ2) + OrigCoeff[ixMpNm]*J2odd(m+1,n-1,α,γ1,γ2)
+			else
+				OutCoeff[ixMN] = OrigCoeff[ixMpNm]*J2odd(m+1,n-1,α,γ1,γ2)
+			end
+		end
+	end
+
+	for n = 1:(N+1)÷2
+		for m = 2:N+1-2n
+			ixMN = pairing(m,n,true) # Index associated to (m,n,Even)
+			ixMmN = pairing(m-1,n,false) # Index associated to (m-1,n,Odd)
+			ixMpNm = pairing(m+1,n-1,false) # Index associated to (m+1,n-1,Odd)
+			if m+2n≤N-1
+				ixMmNp = pairing(m-1,n+1,false) # Index associated to (m-1,n+1,Odd)
+				ixMpN = pairing(m+1,n,false) # Index associated to (m+1,n,Odd)
+				OutCoeff[ixMN] = OrigCoeff[ixMmN]*G2odd(m-1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*H2odd(m-1,n+1,α,γ1,γ2) + OrigCoeff[ixMpN]*I2odd(m+1,n,α,γ1,γ2) + OrigCoeff[ixMpNm]*J2odd(m+1,n-1,α,γ1,γ2)
+			else
+				OutCoeff[ixMN] = OrigCoeff[ixMmN]*G2odd(m-1,n,α,γ1,γ2) + OrigCoeff[ixMpNm]*J2odd(m+1,n-1,α,γ1,γ2)
+			end
+		end
+	end
+
+	# Odd part
+
+	for m = 1:N+1
+		n = 0
+		ixMN = pairing(m,n,false) # Index associated to (m,0,Odd)
+		ixMmN = pairing(m-1,n,true) # Index associated to (m-1,0,Even)
+		if m+2n≤N-1
+			ixMmNp = pairing(m-1,n+1,true) # Index associated to (m-1,1,Even)
+			ixMpN = pairing(m+1,n,true) # Index associated to (m+1,0,Even)
+			OutCoeff[ixMN] = OrigCoeff[ixMmN]*G2even(m-1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*H2even(m-1,n+1,α,γ1,γ2) + OrigCoeff[ixMpN]*I2even(m+1,n,α,γ1,γ2)
+		else
+			OutCoeff[ixMN] = OrigCoeff[ixMmN]*G2even(m-1,n,α,γ1,γ2)
+		end
+		for n = 1:(N+1-m)÷2
+			ixMN = pairing(m,n,false) # Index associated to (m,n,Odd)
+			ixMmN = pairing(m-1,n,true) # Index associated to (m-1,n,Even)
+			ixMpNm = pairing(m+1,n-1,true) # Index associated to (m+1,n-1,Even)
+			if m+2n≤N-1
+				ixMmNp = pairing(m-1,n+1,true) # Index associated to (m-1,n+1,Even)
+				ixMpN = pairing(m+1,n,true) # Index associated to (m+1,n,Even)
+				OutCoeff[ixMN] = OrigCoeff[ixMmN]*G2even(m-1,n,α,γ1,γ2) + OrigCoeff[ixMmNp]*H2even(m-1,n+1,α,γ1,γ2) + OrigCoeff[ixMpN]*I2even(m+1,n,α,γ1,γ2) + OrigCoeff[ixMpNm]*J2even(m+1,n-1,α,γ1,γ2)
+			else
+				OutCoeff[ixMN] = OrigCoeff[ixMmN]*G2even(m-1,n,α,γ1,γ2) + OrigCoeff[ixMpNm]*J2even(m+1,n-1,α,γ1,γ2)
+			end
+		end
+	end
+	DZFun([γ1,γ2,α],N+1,OutCoeff)
+end
 end # module
