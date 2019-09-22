@@ -79,3 +79,15 @@ for param in parameters
 		@assert evalDZ(DunklZernikeExpansions.DunklX(DunklZernikeExpansions.DunklY(f)),point[1],point[2]) ≈ evalDZ(DunklZernikeExpansions.DunklY(DunklZernikeExpansions.DunklX(f)),point[1],point[2])
 	end
 end
+
+# Test mbx1 via evalDZ
+for param in parameters
+	f = DZFun((param[1],param[2],param[3]),d,v)
+	fbx1 = mbx1(f)
+	fbx2 = mbx2(f)
+
+	for point in points
+		@assert evalDZ(fbx1,point[1],point[2]) ≈ point[1]*evalDZ(f,point[1],point[2])
+		@assert evalDZ(fbx2,point[1],point[2]) ≈ point[2]*evalDZ(f,point[1],point[2])
+	end
+end
