@@ -2,6 +2,7 @@ module DunklZernikeExpansions
 
 import Base: +, -, *, /, ==, isapprox
 import Jacobi:jacobi
+import SpecialFunctions:gamma
 
 export DZFun, DZParam, DZPoly, evalDZ, mbx1, mbx2
 
