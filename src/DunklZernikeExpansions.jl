@@ -243,6 +243,34 @@ function genGeg(x::Number,n::Integer,lam::Number,mu::Number)
 	end
 end
 
+function jacsqn(n::Integer,α::Float64,β::Float64)
+	if n == 0 && α+β+1≈0
+		2^(α+β+1)*gamma(α+1)*gamma(β+1)
+	else
+		(2^(α+β+1)/(2n+α+β+1))*( (gamma(n+α+1)*gamma(n+β+1))/(gamma(n+α+β+1)*factorial(n)) )
+	end
+end
+
+function ggsqn(n::Integer,lam::Number,mu::Number)
+	if iseven(n)
+		jacsqn(n÷2,lam-0.5,mu-0.5)/2^(lam+mu)
+	else
+		jacsqn((n-1)÷2,lam-0.5,mu+0.5)/2^(lam+mu+1)
+	end
+end
+
+function hhsqn(m::Integer,γ1::Float64,γ2::Float64,even::Bool)
+	if even
+		2*ggsqn(m,γ2/2,γ1/2)
+	else
+		2*ggsqn(m-1,γ2/2+1,γ1/2)
+	end
+end
+
+function DZsqn(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even::Bool)
+	jacsqn(n,α,m+(γ1+γ2)/2)/2^(m+α+(γ1+γ2)/2+2)*hhsqn(m,γ1,γ2,even)
+end
+
 """
 Evaluate DZFun
 """
