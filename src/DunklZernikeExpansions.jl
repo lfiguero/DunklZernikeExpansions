@@ -152,6 +152,9 @@ function DZPoly(κ::Vector{T}, m::Int64, n::Int64, even::Bool) where T<:Real
 	DZPoly(param, m, n, even)
 end
 
+"""
+Express a DZFun in a base with α raised by 1
+"""
 function raise(f::DZFun)
 	γ1 = f.κ.γ1
 	γ2 = f.κ.γ2
@@ -186,6 +189,9 @@ function raise(f::DZFun)
 	DZFun(outκ, N, outcoefs)
 end
 
+"""
+Express a DZFun in a base with α lowered by 1
+"""
 function lower(f::DZFun)
 	γ1 = f.κ.γ1
 	γ2 = f.κ.γ2
@@ -233,7 +239,7 @@ function lower(f::DZFun)
 end
 
 """
-Generalized Gegenbauer
+Evaluate Generalized Gegenbauer
 """
 function genGeg(x::Number,n::Integer,lam::Number,mu::Number)
 	if iseven(n)
@@ -383,6 +389,9 @@ end
 F1even(n::Integer,α::Float64,γ1::Float64,γ2::Float64) = 2n+2α+γ1+γ2+2
 F2even(n::Integer,α::Float64,γ1::Float64,γ2::Float64) = 2n+2α+γ1+γ2+2
 
+"""
+Compute the application of Dunkl-x to a DZFun
+"""
 function DunklX(f::DZFun)
 	OrigCoeff = f.coefficients
 	α = f.κ.α
@@ -426,6 +435,9 @@ function DunklX(f::DZFun)
 	DZFun([γ1,γ2,α+1],N-1,OutCoeff)
 end
 
+"""
+Compute the application of Dunkl-y to a DZFun
+"""
 function DunklY(f::DZFun)
 	OrigCoeff = f.coefficients
 	α = f.κ.α
@@ -609,6 +621,9 @@ function J2odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	end
 end
 
+"""
+Compute the result of multiply a DZFun by x1
+"""
 function mbx1(f::DZFun)
 	OrigCoeff = f.coefficients
 	α = f.κ.α
@@ -724,6 +739,9 @@ function mbx1(f::DZFun)
 	DZFun([γ1,γ2,α],N+1,OutCoeff)
 end
 
+"""
+Compute the result of multiply a DZFun by x2
+"""
 function mbx2(f::DZFun)
 	OrigCoeff = f.coefficients
 	α = f.κ.α
