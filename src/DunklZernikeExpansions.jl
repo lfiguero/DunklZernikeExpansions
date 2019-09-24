@@ -243,6 +243,9 @@ function genGeg(x::Number,n::Integer,lam::Number,mu::Number)
 	end
 end
 
+"""
+Square norm of a jacobi polynomial
+"""
 function jacsqn(n::Integer,α::Float64,β::Float64)
 	if n == 0 && α+β+1≈0
 		2^(α+β+1)*gamma(α+1)*gamma(β+1)
@@ -251,6 +254,9 @@ function jacsqn(n::Integer,α::Float64,β::Float64)
 	end
 end
 
+"""
+Square norm of a Generalized Gegenbauer polynomial
+"""
 function ggsqn(n::Integer,lam::Number,mu::Number)
 	if iseven(n)
 		jacsqn(n÷2,lam-0.5,mu-0.5)/2^(lam+mu)
@@ -259,6 +265,9 @@ function ggsqn(n::Integer,lam::Number,mu::Number)
 	end
 end
 
+"""
+Square norm (on the circle) of hharmonic
+"""
 function hhsqn(m::Integer,γ1::Float64,γ2::Float64,even::Bool)
 	if even
 		2*ggsqn(m,γ2/2,γ1/2)
@@ -267,6 +276,9 @@ function hhsqn(m::Integer,γ1::Float64,γ2::Float64,even::Bool)
 	end
 end
 
+"""
+Square norm of an element of a Dunkl-Zernike polynomial
+"""
 function DZsqn(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even::Bool)
 	jacsqn(n,α,m+(γ1+γ2)/2)/2^(m+α+(γ1+γ2)/2+2)*hhsqn(m,γ1,γ2,even)
 end
