@@ -306,6 +306,7 @@ function DZFunInner(f::DZFun,g::DZFun)
 		(m,n,even) = inversepairing(j)
 		out += vf[j]*vg[j]*DZsqn(m,n,α,γ1,γ2,even)
 	end
+	out
 end
 
 """
