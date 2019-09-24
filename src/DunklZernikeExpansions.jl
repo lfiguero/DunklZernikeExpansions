@@ -284,6 +284,25 @@ function DZsqn(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even:
 end
 
 """
+Compute inner product between two DZFun with the same parameters
+"""
+function DZFunInner(f::DZFun,g::DZFun)
+	@assert f.κ == g.κ
+	γ1 = f.γ1
+	γ2 = f.γ2
+	α = f.α
+	vf = f.coefficients
+	vg = g.coefficients
+
+	l = min(length(vf),length(vg))
+	out = 0.0
+	for j=1:l
+		(m,n,even) = inversepairing(j)
+		out += vf[j]*vg[j]*DZsqn(m,n,α,γ1,γ2,even)
+	end
+end
+
+"""
 Evaluate DZFun
 """
 function evalDZ(f::DZFun,x::Number,y::Number)
