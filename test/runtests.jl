@@ -91,5 +91,3 @@ for param in parameters
 		@assert evalDZ(fbx2,point[1],point[2]) ≈ point[2]*evalDZ(f,point[1],point[2])
 	end
 end
-
-println("Test passed")
