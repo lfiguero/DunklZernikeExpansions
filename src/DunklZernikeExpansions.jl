@@ -2,6 +2,7 @@ module DunklZernikeExpansions
 
 import Base: +, -, *, /, ==, isapprox
 import Jacobi:jacobi
+import SpecialFunctions:gamma
 
 export DZFun, DZParam, DZPoly, evalDZ, mbx1, mbx2
 
@@ -151,6 +152,9 @@ function DZPoly(κ::Vector{T}, m::Int64, n::Int64, even::Bool) where T<:Real
 	DZPoly(param, m, n, even)
 end
 
+"""
+Express a DZFun in a base with α raised by 1
+"""
 function raise(f::DZFun)
 	γ1 = f.κ.γ1
 	γ2 = f.κ.γ2
@@ -185,6 +189,9 @@ function raise(f::DZFun)
 	DZFun(outκ, N, outcoefs)
 end
 
+"""
+Express a DZFun in a base with α lowered by 1
+"""
 function lower(f::DZFun)
 	γ1 = f.κ.γ1
 	γ2 = f.κ.γ2
@@ -232,7 +239,7 @@ function lower(f::DZFun)
 end
 
 """
-Generalized Gegenbauer
+Evaluate Generalized Gegenbauer
 """
 function genGeg(x::Number,n::Integer,lam::Number,mu::Number)
 	if iseven(n)
@@ -240,6 +247,66 @@ function genGeg(x::Number,n::Integer,lam::Number,mu::Number)
 	else
 		return x*jacobi(2x^2-1,(n-1)÷2,lam-0.5,mu+0.5)
 	end
+end
+
+"""
+Square norm of a jacobi polynomial
+"""
+function jacsqn(n::Integer,α::Float64,β::Float64)
+	if n == 0 && α+β+1≈0
+		2^(α+β+1)*gamma(α+1)*gamma(β+1)
+	else
+		(2^(α+β+1)/(2n+α+β+1))*( (gamma(n+α+1)*gamma(n+β+1))/(gamma(n+α+β+1)*factorial(n)) )
+	end
+end
+
+"""
+Square norm of a Generalized Gegenbauer polynomial
+"""
+function ggsqn(n::Integer,lam::Number,mu::Number)
+	if iseven(n)
+		jacsqn(n÷2,lam-0.5,mu-0.5)/2^(lam+mu)
+	else
+		jacsqn((n-1)÷2,lam-0.5,mu+0.5)/2^(lam+mu+1)
+	end
+end
+
+"""
+Square norm (on the circle) of hharmonic
+"""
+function hhsqn(m::Integer,γ1::Float64,γ2::Float64,even::Bool)
+	if even
+		2*ggsqn(m,γ2/2,γ1/2)
+	else
+		2*ggsqn(m-1,γ2/2+1,γ1/2)
+	end
+end
+
+"""
+Square norm of an element of a Dunkl-Zernike polynomial
+"""
+function DZsqn(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even::Bool)
+	jacsqn(n,α,m+(γ1+γ2)/2)/2^(m+α+(γ1+γ2)/2+2)*hhsqn(m,γ1,γ2,even)
+end
+
+"""
+Compute inner product between two DZFun with the same parameters
+"""
+function DZFunInner(f::DZFun,g::DZFun)
+	@assert f.κ ≈ g.κ
+	γ1 = f.γ1
+	γ2 = f.γ2
+	α = f.α
+	vf = f.coefficients
+	vg = g.coefficients
+
+	l = min(length(vf),length(vg))
+	out = 0.0
+	for j=1:l
+		(m,n,even) = inversepairing(j)
+		out += vf[j]*vg[j]*DZsqn(m,n,α,γ1,γ2,even)
+	end
+	out
 end
 
 """
@@ -323,6 +390,9 @@ end
 F1even(n::Integer,α::Float64,γ1::Float64,γ2::Float64) = 2n+2α+γ1+γ2+2
 F2even(n::Integer,α::Float64,γ1::Float64,γ2::Float64) = 2n+2α+γ1+γ2+2
 
+"""
+Compute the application of Dunkl-x to a DZFun
+"""
 function DunklX(f::DZFun)
 	OrigCoeff = f.coefficients
 	α = f.κ.α
@@ -366,6 +436,9 @@ function DunklX(f::DZFun)
 	DZFun([γ1,γ2,α+1],N-1,OutCoeff)
 end
 
+"""
+Compute the application of Dunkl-y to a DZFun
+"""
 function DunklY(f::DZFun)
 	OrigCoeff = f.coefficients
 	α = f.κ.α
@@ -549,6 +622,9 @@ function J2odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	end
 end
 
+"""
+Compute the result of multiply a DZFun by x1
+"""
 function mbx1(f::DZFun)
 	OrigCoeff = f.coefficients
 	α = f.κ.α
@@ -664,6 +740,9 @@ function mbx1(f::DZFun)
 	DZFun([γ1,γ2,α],N+1,OutCoeff)
 end
 
+"""
+Compute the result of multiply a DZFun by x2
+"""
 function mbx2(f::DZFun)
 	OrigCoeff = f.coefficients
 	α = f.κ.α
