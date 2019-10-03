@@ -66,21 +66,21 @@ for param in parameters
 	@assert norm(r.coefficients) < 1e-10
 end
 
-# Test DunklX and DunklY via raise
-# Test commutativity
+# Test commutativity between the Dunkl operators and raise and between the Dunkl operators
 for param in parameters
 	f = DZFun(param,d,v)
 	
-	DxR = DunklZernikeExpansions.DunklX(DunklZernikeExpansions.raise(f))
-	RDx = DunklZernikeExpansions.raise(DunklZernikeExpansions.DunklX(f))
-	
-	DyR = DunklZernikeExpansions.DunklY(DunklZernikeExpansions.raise(f))
-	RDy = DunklZernikeExpansions.raise(DunklZernikeExpansions.DunklY(f))
+	Dx1R = Dunkl(DunklZernikeExpansions.raise(f),1)
+	RDx1 = DunklZernikeExpansions.raise(Dunkl(f,1))
+	Dx2R = Dunkl(DunklZernikeExpansions.raise(f),2)
+	RDx2 = DunklZernikeExpansions.raise(Dunkl(f,2))
+	Dx1Dx2 = Dunkl(Dunkl(f,2),1)
+	Dx2Dx1 = Dunkl(Dunkl(f,1),2)
 
 	for point in points
-		@assert evalDZ(DxR,point[1],point[2]) ≈ evalDZ(RDx,point[1],point[2])
-		@assert evalDZ(DyR,point[1],point[2]) ≈ evalDZ(RDy,point[1],point[2])
-		@assert evalDZ(DunklZernikeExpansions.DunklX(DunklZernikeExpansions.DunklY(f)),point[1],point[2]) ≈ evalDZ(DunklZernikeExpansions.DunklY(DunklZernikeExpansions.DunklX(f)),point[1],point[2])
+		@assert evalDZ(Dx1R,point[1],point[2]) ≈ evalDZ(RDx1,point[1],point[2])
+		@assert evalDZ(Dx2R,point[1],point[2]) ≈ evalDZ(RDx2,point[1],point[2])
+		@assert evalDZ(Dx1Dx2,point[1],point[2]) ≈ evalDZ(Dx2Dx1,point[1],point[2])
 	end
 end
 
