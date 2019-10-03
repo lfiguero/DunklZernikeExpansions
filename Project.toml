@@ -5,4 +5,5 @@ version = "0.1.0"
 
 [deps]
 Jacobi = "83f21c0b-4282-5fbc-9e3f-f6da3d2e584c"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
