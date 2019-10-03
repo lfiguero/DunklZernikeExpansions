@@ -26,15 +26,15 @@ g3 = DZPoly([-1/2,-1/3,0],2,1,true)
 @assert g1==g2
 @assert g1==g3
 
+points = [randn(2) for i=1:100]
+parameters = [DZParam(10*rand(3)-[1.0,1.0,1.0]...) for i = 1:100]
 
 # Test raise via evalDZ
-points = [randn(2) for i=1:100]
-parameters = [10*rand(3)-Array([1.0,1.0,1.0]) for i = 1:100]
 d = 20
 v = randn(DunklZernikeExpansions.polyDim(d))
 
 for param in parameters 
-	f = DZFun((param[1],param[2],param[3]),d,v)
+	f = DZFun(param,d,v)
 	rf = DunklZernikeExpansions.raise(f)
 	for point in points
 		@assert evalDZ(f,point[1],point[2]) ≈ evalDZ(rf,point[1],point[2])
@@ -42,30 +42,34 @@ for param in parameters
 end
 
 # Test lower via evalDZ
-points = [randn(2) for i=1:100]
-parameters = [10*rand(3)-Array([1.0,1.0,0.0]) for i = 1:100]
 d = 20
 v = randn(DunklZernikeExpansions.polyDim(d))
 for param in parameters 
-	f = DZFun((param[1],param[2],param[3]),d,v)
+	shiftedparam = DZParam(param.γ1,param.γ2,param.α+1.0)
+	f = DZFun(shiftedparam,d,v)
 	lf = DunklZernikeExpansions.lower(f)
 	for point in points
 		@assert evalDZ(f,point[1],point[2]) ≈ evalDZ(lf,point[1],point[2])
 	end
 end
 
-# Test lower and raise are inverse of each other
+# Test whether lower and raise are the inverse of one another
 for param in parameters
-	f = DZFun((param[1],param[2],param[3]),d,v)
-	r1 = DunklZernikeExpansions.raise(DunklZernikeExpansions.lower(f))-f
-	r2 = DunklZernikeExpansions.lower(DunklZernikeExpansions.raise(f))-f
-	@assert norm(r1.coefficients) < 1e-10 && norm(r2.coefficients) < 1e-10
+	f = DZFun(param,d,v)
+	r = DunklZernikeExpansions.lower(DunklZernikeExpansions.raise(f))-f
+	@assert norm(r.coefficients) < 1e-10
+end
+for param in parameters
+	shiftedparam = DZParam(param.γ1,param.γ2,param.α+1.0)
+	f = DZFun(shiftedparam,d,v)
+	r = DunklZernikeExpansions.raise(DunklZernikeExpansions.lower(f))-f
+	@assert norm(r.coefficients) < 1e-10
 end
 
 # Test DunklX and DunklY via raise
 # Test commutativity
 for param in parameters
-	f = DZFun((param[1],param[2],param[3]),d,v)
+	f = DZFun(param,d,v)
 	
 	DxR = DunklZernikeExpansions.DunklX(DunklZernikeExpansions.raise(f))
 	RDx = DunklZernikeExpansions.raise(DunklZernikeExpansions.DunklX(f))
@@ -82,7 +86,7 @@ end
 
 # Test mbx1 via evalDZ
 for param in parameters
-	f = DZFun((param[1],param[2],param[3]),d,v)
+	f = DZFun(param,d,v)
 	fbx1 = mbx1(f)
 	fbx2 = mbx2(f)
 
@@ -94,7 +98,7 @@ end
 
 # Test sym and skew
 for param in parameters
-	f = DZFun((param[1],param[2],param[3]),d,v)
+	f = DZFun(param,d,v)
 	for point in points
 		val = evalDZ(f,point[1],point[2])
 		valsigma1star = evalDZ(f,-point[1],point[2])
