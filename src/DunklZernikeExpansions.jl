@@ -28,7 +28,7 @@ end
 
 function isapprox(κ1::DZParam, κ2::DZParam)
 	a = 1.0e-12
-	isapprox(κ1.γ1,κ1.γ1;atol=a) && isapprox(κ1.γ2,κ1.γ2;atol=a) && isapprox(κ1.α,κ1.α;atol=a)
+	isapprox(κ1.γ1,κ2.γ1;atol=a) && isapprox(κ1.γ2,κ2.γ2;atol=a) && isapprox(κ1.α,κ2.α;atol=a)
 end
 
 struct DZFun
