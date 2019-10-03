@@ -250,7 +250,7 @@ function genGeg(x::Number,n::Integer,lam::Number,mu::Number)
 end
 
 """
-Square norm of a jacobi polynomial
+Square norm of a Jacobi polynomial
 """
 function jacsqn(n::Integer,α::Float64,β::Float64)
 	if n == 0 && α+β+1≈0
@@ -623,7 +623,7 @@ function J2odd(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 end
 
 """
-Compute the result of multiply a DZFun by x1
+Compute the result of multiplying a DZFun by x1
 """
 function mbx1(f::DZFun)
 	OrigCoeff = f.coefficients
@@ -741,7 +741,7 @@ function mbx1(f::DZFun)
 end
 
 """
-Compute the result of multiply a DZFun by x2
+Compute the result of multiplying a DZFun by x2
 """
 function mbx2(f::DZFun)
 	OrigCoeff = f.coefficients
