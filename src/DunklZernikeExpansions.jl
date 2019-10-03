@@ -4,7 +4,7 @@ import Base: +, -, *, /, ==, isapprox
 import Jacobi:jacobi
 import SpecialFunctions:gamma
 
-export DZFun, DZParam, DZPoly, evalDZ, mbx1, mbx2, sym, skew
+export DZFun, DZParam, DZPoly, evalDZ, mbx1, mbx2, sym, skew, Dunkl
 
 function inferDegree(l::Int64)
 	# Given l it returns two integers; the first one is the lowest integer n such that (n+1)(n+2)÷2 ≥ l;
@@ -391,9 +391,9 @@ F1even(n::Integer,α::Float64,γ1::Float64,γ2::Float64) = 2n+2α+γ1+γ2+2
 F2even(n::Integer,α::Float64,γ1::Float64,γ2::Float64) = 2n+2α+γ1+γ2+2
 
 """
-Compute the application of Dunkl-x to a DZFun
+Dunkl-x1 operator with shift
 """
-function DunklX(f::DZFun)
+function DunklShift1(f::DZFun)
 	OrigCoeff = f.coefficients
 	α = f.κ.α
 	γ1 = f.κ.γ1
@@ -437,9 +437,9 @@ function DunklX(f::DZFun)
 end
 
 """
-Compute the application of Dunkl-y to a DZFun
+Dunkl-x2 operator with shift
 """
-function DunklY(f::DZFun)
+function DunklShift2(f::DZFun)
 	OrigCoeff = f.coefficients
 	α = f.κ.α
 	γ1 = f.κ.γ1
@@ -480,6 +480,15 @@ function DunklY(f::DZFun)
 		end
 	end
 	DZFun([γ1,γ2,α+1],N-1,OutCoeff)
+end
+
+"""
+Unshifted Dunkl operator
+"""
+function Dunkl(f::DZFun, j::Int64)
+	@assert j==1 || j==2
+	shiftedOutput = j==1 ? DunklShift1(f) : DunklShift2(f)
+	lower(shiftedOutput)
 end
 
 function G1even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
