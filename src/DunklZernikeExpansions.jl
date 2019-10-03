@@ -4,7 +4,7 @@ import Base: +, -, *, /, ==, isapprox
 import Jacobi:jacobi
 import SpecialFunctions:gamma
 
-export DZFun, DZParam, DZPoly, evalDZ, mbx1, mbx2, sym, skew, Dunkl
+export DZFun, DZParam, DZPoly, evalDZ, mbx1, mbx2, symx1, symx2, skewx1, skewx2, Dunklx1, Dunklx2
 
 function inferDegree(l::Int64)
 	# Given l it returns two integers; the first one is the lowest integer n such that (n+1)(n+2)÷2 ≥ l;
@@ -393,7 +393,7 @@ F2even(n::Integer,α::Float64,γ1::Float64,γ2::Float64) = 2n+2α+γ1+γ2+2
 """
 Dunkl-x1 operator with shift
 """
-function DunklShift1(f::DZFun)
+function DunklShiftx1(f::DZFun)
 	OrigCoeff = f.coefficients
 	α = f.κ.α
 	γ1 = f.κ.γ1
@@ -439,7 +439,7 @@ end
 """
 Dunkl-x2 operator with shift
 """
-function DunklShift2(f::DZFun)
+function DunklShiftx2(f::DZFun)
 	OrigCoeff = f.coefficients
 	α = f.κ.α
 	γ1 = f.κ.γ1
@@ -483,13 +483,10 @@ function DunklShift2(f::DZFun)
 end
 
 """
-Unshifted Dunkl operator
+Unshifted Dunkl operators
 """
-function Dunkl(f::DZFun, j::Int64)
-	@assert j==1 || j==2
-	shiftedOutput = j==1 ? DunklShift1(f) : DunklShift2(f)
-	lower(shiftedOutput)
-end
+Dunklx1(f::DZFun) = lower(DunklShiftx1(f))
+Dunklx2(f::DZFun) = lower(DunklShiftx2(f))
 
 function G1even(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64)
 	if isodd(m)
@@ -889,16 +886,5 @@ function skewx2(f::DZFun)
 	end
 	DZFun(f.κ, f.degree, outcoefs)
 end
-
-function sym(f::DZFun, j::Int64)
-	@assert j == 1 || j == 2
-	j == 1 ? symx1(f) : symx2(f)
-end
-
-function skew(f::DZFun, j::Int64)
-	@assert j == 1 || j == 2
-	j == 1 ? skewx1(f) : skewx2(f)
-end
-
 
 end # module
