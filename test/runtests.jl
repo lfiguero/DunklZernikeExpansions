@@ -84,7 +84,7 @@ for param in parameters
 	end
 end
 
-# Test mbx1 via evalDZ
+# Test mbx1 and mbx2 via evalDZ
 for param in parameters
 	f = DZFun(param,d,v)
 	fbx1 = mbx1(f)
