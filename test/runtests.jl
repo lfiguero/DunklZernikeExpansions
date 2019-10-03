@@ -70,12 +70,12 @@ end
 for param in parameters
 	f = DZFun(param,d,v)
 	
-	Dx1R = Dunkl(DunklZernikeExpansions.raise(f),1)
-	RDx1 = DunklZernikeExpansions.raise(Dunkl(f,1))
-	Dx2R = Dunkl(DunklZernikeExpansions.raise(f),2)
-	RDx2 = DunklZernikeExpansions.raise(Dunkl(f,2))
-	Dx1Dx2 = Dunkl(Dunkl(f,2),1)
-	Dx2Dx1 = Dunkl(Dunkl(f,1),2)
+	Dx1R = Dunklx1(DunklZernikeExpansions.raise(f))
+	RDx1 = DunklZernikeExpansions.raise(Dunklx1(f))
+	Dx2R = Dunklx2(DunklZernikeExpansions.raise(f))
+	RDx2 = DunklZernikeExpansions.raise(Dunklx2(f))
+	Dx1Dx2 = Dunklx1(Dunklx2(f))
+	Dx2Dx1 = Dunklx2(Dunklx1(f))
 
 	for point in points
 		@assert evalDZ(Dx1R,point[1],point[2]) ≈ evalDZ(RDx1,point[1],point[2])
@@ -96,16 +96,16 @@ for param in parameters
 	end
 end
 
-# Test sym and skew
+# Test sym and skew operators
 for param in parameters
 	f = DZFun(param,d,v)
 	for point in points
 		val = evalDZ(f,point[1],point[2])
 		valsigma1star = evalDZ(f,-point[1],point[2])
 		valsigma2star = evalDZ(f,point[1],-point[2])
-		@assert evalDZ(sym(f,1),point[1],point[2]) ≈ (val+valsigma1star)/2.0
-		@assert evalDZ(skew(f,1),point[1],point[2]) ≈ (val-valsigma1star)/2.0
-		@assert evalDZ(sym(f,2),point[1],point[2]) ≈ (val+valsigma2star)/2.0
-		@assert evalDZ(skew(f,2),point[1],point[2]) ≈ (val-valsigma2star)/2.0
+		@assert evalDZ(symx1(f),point[1],point[2]) ≈ (val+valsigma1star)/2.0
+		@assert evalDZ(skewx1(f),point[1],point[2]) ≈ (val-valsigma1star)/2.0
+		@assert evalDZ(symx2(f),point[1],point[2]) ≈ (val+valsigma2star)/2.0
+		@assert evalDZ(skewx2(f),point[1],point[2]) ≈ (val-valsigma2star)/2.0
 	end
 end
