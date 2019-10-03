@@ -91,3 +91,17 @@ for param in parameters
 		@assert evalDZ(fbx2,point[1],point[2]) ≈ point[2]*evalDZ(f,point[1],point[2])
 	end
 end
+
+# Test sym and skew
+for param in parameters
+	f = DZFun((param[1],param[2],param[3]),d,v)
+	for point in points
+		val = evalDZ(f,point[1],point[2])
+		valsigma1star = evalDZ(f,-point[1],point[2])
+		valsigma2star = evalDZ(f,point[1],-point[2])
+		@assert evalDZ(sym(f,1),point[1],point[2]) ≈ (val+valsigma1star)/2.0
+		@assert evalDZ(skew(f,1),point[1],point[2]) ≈ (val-valsigma1star)/2.0
+		@assert evalDZ(sym(f,2),point[1],point[2]) ≈ (val+valsigma2star)/2.0
+		@assert evalDZ(skew(f,2),point[1],point[2]) ≈ (val-valsigma2star)/2.0
+	end
+end

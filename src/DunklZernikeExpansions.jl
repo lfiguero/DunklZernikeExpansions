@@ -4,7 +4,7 @@ import Base: +, -, *, /, ==, isapprox
 import Jacobi:jacobi
 import SpecialFunctions:gamma
 
-export DZFun, DZParam, DZPoly, evalDZ, mbx1, mbx2
+export DZFun, DZParam, DZPoly, evalDZ, mbx1, mbx2, sym, skew
 
 function inferDegree(l::Int64)
 	# Given l it returns two integers; the first one is the lowest integer n such that (n+1)(n+2)÷2 ≥ l;
@@ -834,4 +834,62 @@ function mbx2(f::DZFun)
 	end
 	DZFun([γ1,γ2,α],N+1,OutCoeff)
 end
+
+function symx1(f::DZFun)
+	outcoefs = deepcopy(f.coefficients)
+	for i = 1:polyDim(f.degree)
+		(m,n,even) = inversepairing(i)
+		meven = iseven(m)
+		if xor(even,meven)
+			outcoefs[i] = 0.0
+		end
+	end
+	DZFun(f.κ, f.degree, outcoefs)
+end
+
+function skewx1(f::DZFun)
+	outcoefs = deepcopy(f.coefficients)
+	for i = 1:polyDim(f.degree)
+		(m,n,even) = inversepairing(i)
+		meven = iseven(m)
+		if ~xor(even,meven)
+			outcoefs[i] = 0.0
+		end
+	end
+	DZFun(f.κ, f.degree, outcoefs)
+end
+
+function symx2(f::DZFun)
+	outcoefs = deepcopy(f.coefficients)
+	for i = 1:polyDim(f.degree)
+		(m,n,even) = inversepairing(i)
+		if ~even
+			outcoefs[i] = 0.0
+		end
+	end
+	DZFun(f.κ, f.degree, outcoefs)
+end
+
+function skewx2(f::DZFun)
+	outcoefs = deepcopy(f.coefficients)
+	for i = 1:polyDim(f.degree)
+		(m,n,even) = inversepairing(i)
+		if even
+			outcoefs[i] = 0.0
+		end
+	end
+	DZFun(f.κ, f.degree, outcoefs)
+end
+
+function sym(f::DZFun, j::Int64)
+	@assert j == 1 || j == 2
+	j == 1 ? symx1(f) : symx2(f)
+end
+
+function skew(f::DZFun, j::Int64)
+	@assert j == 1 || j == 2
+	j == 1 ? skewx1(f) : skewx2(f)
+end
+
+
 end # module
