@@ -130,3 +130,11 @@ function SL(f::DZFun)
 	skewsB = γ1*γ1*skewx1(f) + 2*γ1*γ2*skewx1(skewx2(f)) + γ2*γ2*skewx2(f)
 	generalizedMinusDivGrad - DunklLaplaceBeltrami - skewsA + skewsB
 end
+κ = DZParam(0.1,0.2,0.3)
+for i = 1:200
+	(m,n,even) = DunklZernikeExpansions.inversepairing(i)
+	p = DZPoly(κ, m, n, even)
+	Lp = SL(p)
+	theoreticalLp = p.degree*(p.degree + 2*κ.α + κ.γ1 + κ.γ2 + 2.0)*p
+	println(norm((Lp-theoreticalLp).coefficients))
+end
