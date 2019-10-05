@@ -72,6 +72,15 @@ function ==(f::DZFun, g::DZFun)
 	equalκ && equalc
 end
 
+function isapprox(f::DZFun, g::DZFun)
+	equalκ = f.κ ≈ g.κ
+	fl = length(f.coefficients)
+	gl = length(g.coefficients)
+	maxl = max(fl,gl)
+	equalc = [f.coefficients;zeros(maxl-fl)] ≈ [g.coefficients;zeros(maxl-gl)]
+	equalκ && equalc
+end
+
 # Unary operations
 -(f::DZFun) = DZFun(f.κ, f.degree, -f.coefficients)
 
