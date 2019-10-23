@@ -161,6 +161,14 @@ function DZPoly(κ::Vector{T}, m::Int64, n::Int64, even::Bool) where T<:Real
 	DZPoly(param, m, n, even)
 end
 
+function project(f::DZFun, N::Int64)
+	if f.degree≤N
+		f
+	else
+		DZFun(f.κ,f.coefficients[1:polyDim(N)])
+	end
+end
+
 """
 Express a DZFun in a base with α raised by 1
 """
