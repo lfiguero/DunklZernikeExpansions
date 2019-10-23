@@ -303,9 +303,9 @@ Compute inner product between two DZFun with the same parameters
 """
 function DZFunInner(f::DZFun,g::DZFun)
 	@assert f.κ ≈ g.κ
-	γ1 = f.γ1
-	γ2 = f.γ2
-	α = f.α
+	γ1 = f.κ.γ1
+	γ2 = f.κ.γ2
+	α = f.κ.α
 	vf = f.coefficients
 	vg = g.coefficients
 
