@@ -161,6 +161,14 @@ function DZPoly(κ::Vector{T}, m::Int64, n::Int64, even::Bool) where T<:Real
 	DZPoly(param, m, n, even)
 end
 
+function project(f::DZFun, N::Int64)
+	if f.degree≤N
+		f
+	else
+		DZFun(f.κ,f.coefficients[1:polyDim(N)])
+	end
+end
+
 """
 Express a DZFun in a base with α raised by 1
 """
@@ -303,9 +311,9 @@ Compute inner product between two DZFun with the same parameters
 """
 function DZFunInner(f::DZFun,g::DZFun)
 	@assert f.κ ≈ g.κ
-	γ1 = f.γ1
-	γ2 = f.γ2
-	α = f.α
+	γ1 = f.κ.γ1
+	γ2 = f.κ.γ2
+	α = f.κ.α
 	vf = f.coefficients
 	vg = g.coefficients
 
