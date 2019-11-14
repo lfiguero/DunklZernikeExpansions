@@ -4,7 +4,7 @@ import Base: +, -, *, /, ==, isapprox
 import Jacobi:jacobi
 import SpecialFunctions:gamma
 
-export DZFun, DZParam, DZPoly, evalDZ, mbx1, mbx2, symx1, symx2, skewx1, skewx2, Dunklx1, Dunklx2
+export DZFun, DZParam, DZPoly, evalDZ, mbx1, mbx2, symx1, symx2, skewx1, skewx2, Dunklx1, Dunklx2, DunklAngular
 
 function inferDegree(l::Int64)
 	# Given l it returns two integers; the first one is the lowest integer n such that (n+1)(n+2)÷2 ≥ l;
@@ -905,5 +905,10 @@ function skewx2(f::DZFun)
 	end
 	DZFun(f.κ, f.degree, outcoefs)
 end
+
+"""
+Compute the result of applying the angular Dunkl operator D_{12} to a DZFun without shifting parameters.
+"""
+DunklAngular(f::DZFun) = mbx1(Dunklx2(f)) - mbx2(Dunklx1(f))
 
 end # module
