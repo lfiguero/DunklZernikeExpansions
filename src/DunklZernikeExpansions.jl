@@ -4,7 +4,7 @@ import Base: +, -, *, /, ==, isapprox
 import Jacobi:jacobi
 import SpecialFunctions:gamma
 
-export DZFun, DZParam, DZPoly, evalDZ, mbx1, mbx2, symx1, symx2, skewx1, skewx2, Dunklx1, Dunklx2, DunklAngular
+export DZFun, DZParam, DZPoly, evalDZ, mbx1, mbx2, symx1, symx2, skewx1, skewx2, Dunklx1, Dunklx2, DunklAngular, project
 
 function inferDegree(l::Int64)
 	# Given l it returns two integers; the first one is the lowest integer n such that (n+1)(n+2)÷2 ≥ l;
