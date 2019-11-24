@@ -919,6 +919,6 @@ mbr(f::DZFun) = f-mbx1(mbx1(f))-mbx2(mbx2(f))
 """
 Compute the (α,γ)-adjoint of the Dunkl operator applied in a DZFun
 """
-adjointDunklx1(f::DZFun) = -mbr(Dunklx1(f)) + 2*(f.κ.α+1)*mbx1(f)
-adjointDunklx2(f::DZFun) = -mbr(Dunklx2(f)) + 2*(f.κ.α+1)*mbx2(f)
+adjointDunklx1(f::DZFun,α::Float64) = -mbr(Dunklx1(f)) + 2*(α+1)*mbx1(f)
+adjointDunklx2(f::DZFun,α::Float64) = -mbr(Dunklx2(f)) + 2*(α+1)*mbx2(f)
 end # module
