@@ -119,12 +119,11 @@ function DunklAdjointx2(f::DZFun, b::Real)
 	Dx2f = Dunklx2(f)
 	-Dx2f + mbx1(mbx1(Dx2f)) + mbx2(mbx2(Dx2f)) + 2*(b+1.0)*mbx2(f)
 end
-DunklAdjointx1(f::DZFun) = DunklAdjointx1(f::DZFun, f.κ.α)
-DunklAdjointx2(f::DZFun) = DunklAdjointx2(f::DZFun, f.κ.α)
+
 Dunklθ(f::DZFun) = mbx1(Dunklx2(f)) - mbx2(Dunklx1(f))
 function SL(f::DZFun)
 	α = f.κ.α; γ1 = f.κ.γ1; γ2 = f.κ.γ2
-	generalizedMinusDivGrad = DunklAdjointx1(Dunklx1(f)) + DunklAdjointx2(Dunklx2(f))
+	generalizedMinusDivGrad = DunklAdjointx1(Dunklx1(f),α) + DunklAdjointx2(Dunklx2(f),α)
 	DunklLaplaceBeltrami = Dunklθ(Dunklθ(f))
 	skewsA = (2*α+γ1+γ2+2.0)*(γ1*skewx1(f)+γ2*skewx2(f))
 	skewsB = γ1*γ1*skewx1(f) + 2*γ1*γ2*skewx1(skewx2(f)) + γ2*γ2*skewx2(f)
