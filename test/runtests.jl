@@ -121,8 +121,8 @@ function DunklAdjointx2(f::DZFun, b::Real)
 end
 
 Dunklθ(f::DZFun) = mbx1(Dunklx2(f)) - mbx2(Dunklx1(f))
-function SL(f::DZFun)
-	α = f.κ.α; γ1 = f.κ.γ1; γ2 = f.κ.γ2
+function SL(f::DZFun,α::Real)
+	γ1 = f.κ.γ1; γ2 = f.κ.γ2
 	generalizedMinusDivGrad = DunklAdjointx1(Dunklx1(f),α) + DunklAdjointx2(Dunklx2(f),α)
 	DunklLaplaceBeltrami = Dunklθ(Dunklθ(f))
 	skewsA = (2*α+γ1+γ2+2.0)*(γ1*skewx1(f)+γ2*skewx2(f))
@@ -133,7 +133,7 @@ for param in parameters
 	for i = 1:200
 		(m,n,even) = DunklZernikeExpansions.inversepairing(i)
 		p = DZPoly(param, m, n, even)
-		Lp = SL(p)
+		Lp = SL(p,p.κ.α)
 		theoreticalLp = p.degree*(p.degree + 2*param.α + param.γ1 + param.γ2 + 2.0)*p
 		@assert Lp ≈ theoreticalLp
 	end
