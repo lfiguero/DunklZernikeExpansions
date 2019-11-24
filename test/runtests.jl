@@ -110,7 +110,7 @@ for param in parameters
 	end
 end
 
-# Test of Sturm–Liouville problem
+# Test of Sturm–Liouville problem satisfied by Lebesgue orthogonal polynomials
 function DunklAdjointx1(f::DZFun, b::Real)
 	Dx1f = Dunklx1(f)
 	-Dx1f + mbx1(mbx1(Dx1f)) + mbx2(mbx2(Dx1f)) + 2*(b+1.0)*mbx1(f)
