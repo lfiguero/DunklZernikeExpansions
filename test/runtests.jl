@@ -138,3 +138,7 @@ for param in parameters
 		@assert Lp ≈ theoreticalLp
 	end
 end
+
+function M(f::DZFun,α::Real)
+	DunklAdjointx1(DunklAdjointx1(f,α),α-1) + DunklAdjointx2(DunklAdjointx2(f,α),α-1)
+end
