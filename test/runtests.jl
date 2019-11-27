@@ -132,3 +132,20 @@ end
 function M(f::DZFun,α::Real)
 	adjointDunklx1(adjointDunklx1(f,α),α-1) + adjointDunklx2(adjointDunklx2(f,α),α-1)
 end
+
+# Test of Sturm–Liouville problem satisfied by Dunkl-Sobolev orthogonal polynomials
+
+for param in parameters
+	for deg = 0:1
+		v = rand(DunklZernikeExpansions.polyDim(deg) - DunklZernikeExpansions.polyDim(deg-1))
+		v = [zeros(DunklZernikeExpansions.polyDim(deg-1)) ; v]
+		p = DZFun(param,v)
+		@assert p.degree == deg
+		Lp = SL(p,p.κ.α-1)
+		theoreticalLp = p.degree*(p.degree + 2*(param.α-1.) + param.γ1 + param.γ2 + 2.0)*p
+		@assert Lp ≈ theoreticalLp
+	end
+	for deg = 3:10
+
+	end
+end
