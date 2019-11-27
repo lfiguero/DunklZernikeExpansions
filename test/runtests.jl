@@ -111,20 +111,10 @@ for param in parameters
 end
 
 # Test of Sturm–Liouville problem satisfied by Lebesgue orthogonal polynomials
-function DunklAdjointx1(f::DZFun, b::Real)
-	Dx1f = Dunklx1(f)
-	-Dx1f + mbx1(mbx1(Dx1f)) + mbx2(mbx2(Dx1f)) + 2*(b+1.0)*mbx1(f)
-end
-function DunklAdjointx2(f::DZFun, b::Real)
-	Dx2f = Dunklx2(f)
-	-Dx2f + mbx1(mbx1(Dx2f)) + mbx2(mbx2(Dx2f)) + 2*(b+1.0)*mbx2(f)
-end
-
-Dunklθ(f::DZFun) = mbx1(Dunklx2(f)) - mbx2(Dunklx1(f))
 function SL(f::DZFun,α::Real)
 	γ1 = f.κ.γ1; γ2 = f.κ.γ2
-	generalizedMinusDivGrad = DunklAdjointx1(Dunklx1(f),α) + DunklAdjointx2(Dunklx2(f),α)
-	DunklLaplaceBeltrami = Dunklθ(Dunklθ(f))
+	generalizedMinusDivGrad = adjointDunklx1(Dunklx1(f),α) + adjointDunklx2(Dunklx2(f),α)
+	DunklLaplaceBeltrami = DunklAngular(DunklAngular(f))
 	skewsA = (2*α+γ1+γ2+2.0)*(γ1*skewx1(f)+γ2*skewx2(f))
 	skewsB = γ1*γ1*skewx1(f) + 2*γ1*γ2*skewx1(skewx2(f)) + γ2*γ2*skewx2(f)
 	generalizedMinusDivGrad - DunklLaplaceBeltrami - skewsA + skewsB
@@ -140,5 +130,5 @@ for param in parameters
 end
 
 function M(f::DZFun,α::Real)
-	DunklAdjointx1(DunklAdjointx1(f,α),α-1) + DunklAdjointx2(DunklAdjointx2(f,α),α-1)
+	adjointDunklx1(adjointDunklx1(f,α),α-1) + adjointDunklx2(adjointDunklx2(f,α),α-1)
 end
