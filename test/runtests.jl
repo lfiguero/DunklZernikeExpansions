@@ -145,7 +145,25 @@ for param in parameters
 		theoreticalLp = p.degree*(p.degree + 2*(param.α-1.) + param.γ1 + param.γ2 + 2.0)*p
 		@assert Lp ≈ theoreticalLp
 	end
-	for deg = 3:10
+	for deg = 3:20
+		vh = rand(DunklZernikeExpansions.polyDim(deg) - DunklZernikeExpansions.polyDim(deg-1))
+		vh = [zeros(DunklZernikeExpansions.polyDim(deg-1)) ; vh]
+		for i = DunklZernikeExpansions.polyDim(deg-1)+1:length(vh)
+			if DunklZernikeExpansions.inversepairing(i)[2] != 0
+				vh[i] = 0.
+			end
+		end
+		ph = DZFun(param,vh) #harmonic part
 
+		vm = rand(DunklZernikeExpansions.polyDim(deg-2) - DunklZernikeExpansions.polyDim(deg-3))
+		vm = [zeros(DunklZernikeExpansions.polyDim(deg-3)) ; vm]
+		pm = DZFun([param.γ1,param.γ2,param.α+1.],vm)
+		pm = DunklZernikeExpansions.lower(M(pm,param.α)) #M part
+
+		p = ph + pm
+		@assert p.degree == deg
+		Lp = SL(p,p.κ.α-1)
+		theoreticalLp = p.degree*(p.degree + 2*(param.α-1.) + param.γ1 + param.γ2 + 2.0)*p
+		@assert Lp ≈ theoreticalLp
 	end
 end
