@@ -327,7 +327,10 @@ function DZFunInner(f::DZFun,g::DZFun)
 end
 
 #########################################################################################################
-
+"""
+Computes the ratio between the weighted square norms of two consecutive Jacobi polynomials of same parameters
+"""
+JacDegreeRatio(n::Integer,α::Float64,β::Float64) = ((2n+α+β+1)/(2n+α+β+3))*((n+α+1)/(n+α+β+1))*((n+β+1)/(n+1))
 #########################################################################################################
 
 """
