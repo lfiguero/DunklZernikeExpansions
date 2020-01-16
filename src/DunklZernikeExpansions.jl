@@ -347,6 +347,17 @@ function GGRatio(n::Integer,λ::Float64,μ::Float64)
 		JacDegreeRatio((n-1)÷2,λ-0.5,μ+0.5)
 	end
 end
+
+"""
+Computes the ratio between the weighted square norm of two h-harmonic polynomials of same parameters but differing in the degree in two units
+"""
+function hhRatio(m::Integer,γ1::Float64,γ2::Float64,even::Bool)
+	if even
+		GGRatio(m,γ2/2,γ1/2)
+	else
+		GGRatio(m-1,γ2/2+1,γ1/2)
+	end
+end
 #########################################################################################################
 
 """
