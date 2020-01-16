@@ -367,7 +367,7 @@ DZnRatio(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even::Bool)
 """
 Compute the ratio between the weighted square norm of two DZ polynomials of same parameters but differing in m in two units
 """
-DZmRatio(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even::Bool) = .5*JacParameterRatio(n,α,m+(γ1+γ2)/2)*hhRatio(m,γ1,γ2,even)
+DZmRatio(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even::Bool) = .25*JacParameterRatio(n,α,m+(γ1+γ2)/2)*hhRatio(m,γ1,γ2,even)
 #########################################################################################################
 
 """
