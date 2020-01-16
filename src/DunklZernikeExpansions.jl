@@ -336,6 +336,17 @@ JacDegreeRatio(n::Integer,α::Float64,β::Float64) = ((2n+α+β+1)/(2n+α+β+3))
 Computes the ratio between twe weighted square norm of two Jacobi polynoamials of same degree and first parameter but differing in its second parameter in two units
 """
 JacParameterRatio(n::Integer,α::Float64,β::Float64) = 4*((2n+α+β+1)/(2n+α+β+3))*((n+β+2)/(n+α+β+2))*((n+β+1)/(n+α+β+1))
+
+"""
+Computes the ratio between the weighted square norm of two Generalized Gegenbauer polynomials of same parameters but differing in the degree in two units.
+"""
+function GGRatio(n::Integer,λ::Float64,μ::Float64)
+	if iseven(n)
+		JacDegreeRatio(n÷2,λ-0.5,μ-0.5)
+	else
+		JacDegreeRatio((n-1)÷2,λ-0.5,μ+0.5)
+	end
+end
 #########################################################################################################
 
 """
