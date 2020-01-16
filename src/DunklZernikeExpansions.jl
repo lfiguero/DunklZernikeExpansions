@@ -368,6 +368,36 @@ DZnRatio(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even::Bool)
 Compute the ratio between the weighted square norm of two DZ polynomials of same parameters but differing in m in two units
 """
 DZmRatio(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even::Bool) = .25*JacParameterRatio(n,α,m+(γ1+γ2)/2)*hhRatio(m,γ1,γ2,even)
+
+"""
+Compute inner product between two DZFun with the same parameters
+"""
+function DZFunInnerOptim(f::DZFun,g::DZFun)
+	@assert f.κ ≈ g.κ
+	γ1 = f.κ.γ1
+	γ2 = f.κ.γ2
+	α = f.κ.α
+	vf = f.coefficients
+	vg = g.coefficients
+	N = min(f.degree,g.degree)
+	out = 0.0
+
+	for even=[true,false]
+		pivot1 = DZsqn(1-even,0,α,γ1,γ2,even)
+		pivot2 = DZsqn(2-even,0,α,γ1,γ2,even)
+		for m=(1-even):N
+			aux = pivot1
+			for n=0:(N-m)÷2
+				ix = pairing(m,n,even)
+				out += vf[ix]*vg[ix]*aux
+				aux = DZnRatio(m,n,α,γ1,γ2,even)*aux
+			end
+
+			(pivot1,pivot2) = (pivot2,DZmRatio(m,0,α,γ1,γ2,even)*pivot1)
+		end
+	end
+	out
+end
 #########################################################################################################
 
 """
