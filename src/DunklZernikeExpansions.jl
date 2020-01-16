@@ -358,6 +358,16 @@ function hhRatio(m::Integer,γ1::Float64,γ2::Float64,even::Bool)
 		GGRatio(m-1,γ2/2+1,γ1/2)
 	end
 end
+
+"""
+Compute the ratio between the weighted square norm of two DZ polynomials of same parameters but differing in n in one unit
+"""
+DZnRatio(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even::Bool) = JacDegreeRatio(n,α,m+(γ1+γ2)/2)
+
+"""
+Compute the ratio between the weighted square norm of two DZ polynomials of same parameters but differing in m in two units
+"""
+DZmRatio(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even::Bool) = .5*JacParameterRatio(n,α,m+(γ1+γ2)/2)*hhRatio(m,γ1,γ2,even)
 #########################################################################################################
 
 """
