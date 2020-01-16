@@ -307,27 +307,6 @@ function DZsqn(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even:
 end
 
 """
-Compute inner product between two DZFun with the same parameters
-"""
-function DZFunInner(f::DZFun,g::DZFun)
-	@assert f.κ ≈ g.κ
-	γ1 = f.κ.γ1
-	γ2 = f.κ.γ2
-	α = f.κ.α
-	vf = f.coefficients
-	vg = g.coefficients
-
-	l = min(length(vf),length(vg))
-	out = 0.0
-	for j=1:l
-		(m,n,even) = inversepairing(j)
-		out += vf[j]*vg[j]*DZsqn(m,n,α,γ1,γ2,even)
-	end
-	out
-end
-
-#########################################################################################################
-"""
 Compute the ratio between the weighted square norms of two consecutive Jacobi polynomials of same parameters
 """
 JacDegreeRatio(n::Integer,α::Float64,β::Float64) = ((2n+α+β+1)/(2n+α+β+3))*((n+α+1)/(n+α+β+1))*((n+β+1)/(n+1))
@@ -372,7 +351,7 @@ DZmRatio(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even::Bool)
 """
 Compute inner product between two DZFun with the same parameters
 """
-function DZFunInnerOptim(f::DZFun,g::DZFun)
+function DZFunInner(f::DZFun,g::DZFun)
 	@assert f.κ ≈ g.κ
 	γ1 = f.κ.γ1
 	γ2 = f.κ.γ2
@@ -398,7 +377,6 @@ function DZFunInnerOptim(f::DZFun,g::DZFun)
 	end
 	out
 end
-#########################################################################################################
 
 """
 Evaluate DZFun
