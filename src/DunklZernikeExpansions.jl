@@ -307,6 +307,48 @@ function DZsqn(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even:
 end
 
 """
+Compute the ratio between the weighted square norms of two consecutive Jacobi polynomials of same parameters
+"""
+JacDegreeRatio(n::Integer,α::Float64,β::Float64) = ((2n+α+β+1)/(2n+α+β+3))*((n+α+1)/(n+α+β+1))*((n+β+1)/(n+1))
+
+"""
+Compute the ratio between twe weighted square norm of two Jacobi polynoamials of same degree and first parameter but differing in its second parameter in two units
+"""
+JacParameterRatio(n::Integer,α::Float64,β::Float64) = 4*((2n+α+β+1)/(2n+α+β+3))*((n+β+2)/(n+α+β+2))*((n+β+1)/(n+α+β+1))
+
+"""
+Compute the ratio between the weighted square norm of two Generalized Gegenbauer polynomials of same parameters but differing in the degree in two units.
+"""
+function GGRatio(n::Integer,λ::Float64,μ::Float64)
+	if iseven(n)
+		JacDegreeRatio(n÷2,λ-0.5,μ-0.5)
+	else
+		JacDegreeRatio((n-1)÷2,λ-0.5,μ+0.5)
+	end
+end
+
+"""
+Compute the ratio between the weighted square norm of two h-harmonic polynomials of same parameters but differing in the degree in two units
+"""
+function hhRatio(m::Integer,γ1::Float64,γ2::Float64,even::Bool)
+	if even
+		GGRatio(m,γ2/2,γ1/2)
+	else
+		GGRatio(m-1,γ2/2+1,γ1/2)
+	end
+end
+
+"""
+Compute the ratio between the weighted square norm of two DZ polynomials of same parameters but differing in n in one unit
+"""
+DZnRatio(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even::Bool) = JacDegreeRatio(n,α,m+(γ1+γ2)/2)
+
+"""
+Compute the ratio between the weighted square norm of two DZ polynomials of same parameters but differing in m in two units
+"""
+DZmRatio(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even::Bool) = .25*JacParameterRatio(n,α,m+(γ1+γ2)/2)*hhRatio(m,γ1,γ2,even)
+
+"""
 Compute inner product between two DZFun with the same parameters
 """
 function DZFunInner(f::DZFun,g::DZFun)
@@ -316,12 +358,22 @@ function DZFunInner(f::DZFun,g::DZFun)
 	α = f.κ.α
 	vf = f.coefficients
 	vg = g.coefficients
-
-	l = min(length(vf),length(vg))
+	N = min(f.degree,g.degree)
 	out = 0.0
-	for j=1:l
-		(m,n,even) = inversepairing(j)
-		out += vf[j]*vg[j]*DZsqn(m,n,α,γ1,γ2,even)
+
+	for even=[true,false]
+		pivot1 = DZsqn(1-even,0,α,γ1,γ2,even)
+		pivot2 = DZsqn(2-even,0,α,γ1,γ2,even)
+		for m=(1-even):N
+			aux = pivot1
+			for n=0:(N-m)÷2
+				ix = pairing(m,n,even)
+				out += vf[ix]*vg[ix]*aux
+				aux = DZnRatio(m,n,α,γ1,γ2,even)*aux
+			end
+
+			(pivot1,pivot2) = (pivot2,DZmRatio(m,0,α,γ1,γ2,even)*pivot1)
+		end
 	end
 	out
 end
