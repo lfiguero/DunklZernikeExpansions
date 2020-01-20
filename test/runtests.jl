@@ -167,3 +167,11 @@ for param in parameters
 		@assert Lp ≈ theoreticalLp
 	end
 end
+
+# Test commutation property
+
+for param in parameters
+	f = DZFun(param,d,v)
+	α = randn()
+	Dunklx1(SL(f,α-1)) - SL(Dunklx1(f),α) ≈ (2*α+f.κ.γ1+f.κ.γ2+2-1)*Dunklx1(f)
+end
