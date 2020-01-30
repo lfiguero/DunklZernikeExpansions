@@ -4,7 +4,7 @@ import Base: +, -, *, /, ==, isapprox
 import Jacobi:jacobi
 import SpecialFunctions:gamma
 
-export DZFun, DZParam, DZPoly, evalDZ, mbx1, mbx2, symx1, symx2, skewx1, skewx2, Dunklx1, Dunklx2, DunklAngular, project, mbr, adjointDunklx1, adjointDunklx2
+export DZFun, DZParam, DZPoly, wip, evalDZ, mbx1, mbx2, symx1, symx2, skewx1, skewx2, Dunklx1, Dunklx2, DunklAngular, project, mbr, adjointDunklx1, adjointDunklx2
 
 function inferDegree(l::Int64)
 	# Given l it returns two integers; the first one is the lowest integer n such that (n+1)(n+2)÷2 ≥ l;
@@ -349,9 +349,9 @@ Compute the ratio between the weighted square norm of two DZ polynomials of same
 DZmRatio(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even::Bool) = .25*JacParameterRatio(n,α,m+(γ1+γ2)/2)*hhRatio(m,γ1,γ2,even)
 
 """
-Compute inner product between two DZFun with the same parameters
+Compute weighted inner product between two DZFun with the same parameters
 """
-function DZFunInner(f::DZFun,g::DZFun)
+function wip(f::DZFun,g::DZFun)
 	@assert f.κ ≈ g.κ
 	γ1 = f.κ.γ1
 	γ2 = f.κ.γ2
