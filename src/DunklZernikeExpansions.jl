@@ -319,7 +319,13 @@ end
 """
 Compute the ratio between twe weighted square norm of two Jacobi polynoamials of same degree and first parameter but differing in its second parameter in two units
 """
-JacParameterRatio(n::Integer,α::Float64,β::Float64) = 4*((2n+α+β+1)/(2n+α+β+3))*((n+β+2)/(n+α+β+2))*((n+β+1)/(n+α+β+1))
+function JacParameterRatio(n::Integer,α::Float64,β::Float64)
+	if n == 0 && α+β+1≈0
+		4*((β+2)/(α+β+3))*((β+1)/(α+β+2))
+	else
+		4*((2n+α+β+1)/(2n+α+β+3))*((n+β+2)/(n+α+β+2))*((n+β+1)/(n+α+β+1))
+	end
+end
 
 """
 Compute the ratio between the weighted square norm of two Generalized Gegenbauer polynomials of same parameters but differing in the degree in two units.
