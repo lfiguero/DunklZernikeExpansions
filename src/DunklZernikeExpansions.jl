@@ -984,4 +984,7 @@ Compute the (α,γ)-adjoint of the Dunkl operator applied in a DZFun
 """
 adjointDunklx1(f::DZFun,α::Float64) = -mbr(Dunklx1(f)) + 2*(α+1)*mbx1(f)
 adjointDunklx2(f::DZFun,α::Float64) = -mbr(Dunklx2(f)) + 2*(α+1)*mbx2(f)
+
+
+include("experiments/quantifying-H1-projector-H2-mismatch.jl")
 end # module
