@@ -133,7 +133,7 @@ function M(f::DZFun,α::Real)
 	adjointDunklx1(adjointDunklx1(f,α),α-1) + adjointDunklx2(adjointDunklx2(f,α),α-1)
 end
 
-# Test of Sturm–Liouville problem satisfied by Dunkl-Sobolev orthogonal polynomials
+# Test of Sturm–Liouville problem satisfied by Dunkl–Sobolev orthogonal polynomials
 
 for param in parameters
 	for deg = 0:1

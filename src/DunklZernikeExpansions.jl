@@ -300,7 +300,7 @@ function hhsqn(m::Integer,γ1::Float64,γ2::Float64,even::Bool)
 end
 
 """
-Square norm of an element of a Dunkl-Zernike polynomial
+Square norm of an element of a Dunkl–Zernike polynomial
 """
 function DZsqn(m::Integer,n::Integer,α::Float64,γ1::Float64,γ2::Float64,even::Bool)
 	jacsqn(n,α,m+(γ1+γ2)/2)/2^(m+α+(γ1+γ2)/2+2)*hhsqn(m,γ1,γ2,even)
