@@ -110,22 +110,11 @@ for param in parameters
 	end
 end
 
-# Test of Sturm–Liouville problem
-function DunklAdjointx1(f::DZFun, b::Real)
-	Dx1f = Dunklx1(f)
-	-Dx1f + mbx1(mbx1(Dx1f)) + mbx2(mbx2(Dx1f)) + 2*(b+1.0)*mbx1(f)
-end
-function DunklAdjointx2(f::DZFun, b::Real)
-	Dx2f = Dunklx2(f)
-	-Dx2f + mbx1(mbx1(Dx2f)) + mbx2(mbx2(Dx2f)) + 2*(b+1.0)*mbx2(f)
-end
-DunklAdjointx1(f::DZFun) = DunklAdjointx1(f::DZFun, f.κ.α)
-DunklAdjointx2(f::DZFun) = DunklAdjointx2(f::DZFun, f.κ.α)
-Dunklθ(f::DZFun) = mbx1(Dunklx2(f)) - mbx2(Dunklx1(f))
-function SL(f::DZFun)
-	α = f.κ.α; γ1 = f.κ.γ1; γ2 = f.κ.γ2
-	generalizedMinusDivGrad = DunklAdjointx1(Dunklx1(f)) + DunklAdjointx2(Dunklx2(f))
-	DunklLaplaceBeltrami = Dunklθ(Dunklθ(f))
+# Test of Sturm–Liouville problem satisfied by Lebesgue orthogonal polynomials
+function SL(f::DZFun,α::Real)
+	γ1 = f.κ.γ1; γ2 = f.κ.γ2
+	generalizedMinusDivGrad = adjointDunklx1(Dunklx1(f),α) + adjointDunklx2(Dunklx2(f),α)
+	DunklLaplaceBeltrami = DunklAngular(DunklAngular(f))
 	skewsA = (2*α+γ1+γ2+2.0)*(γ1*skewx1(f)+γ2*skewx2(f))
 	skewsB = γ1*γ1*skewx1(f) + 2*γ1*γ2*skewx1(skewx2(f)) + γ2*γ2*skewx2(f)
 	generalizedMinusDivGrad - DunklLaplaceBeltrami - skewsA + skewsB
@@ -134,8 +123,55 @@ for param in parameters
 	for i = 1:200
 		(m,n,even) = DunklZernikeExpansions.inversepairing(i)
 		p = DZPoly(param, m, n, even)
-		Lp = SL(p)
+		Lp = SL(p,p.κ.α)
 		theoreticalLp = p.degree*(p.degree + 2*param.α + param.γ1 + param.γ2 + 2.0)*p
 		@assert Lp ≈ theoreticalLp
 	end
+end
+
+function M(f::DZFun,α::Real)
+	adjointDunklx1(adjointDunklx1(f,α),α-1) + adjointDunklx2(adjointDunklx2(f,α),α-1)
+end
+
+# Test of Sturm–Liouville problem satisfied by Dunkl-Sobolev orthogonal polynomials
+
+for param in parameters
+	for deg = 0:1
+		v = rand(DunklZernikeExpansions.polyDim(deg) - DunklZernikeExpansions.polyDim(deg-1))
+		v = [zeros(DunklZernikeExpansions.polyDim(deg-1)) ; v]
+		p = DZFun(param,v)
+		@assert p.degree == deg
+		Lp = SL(p,p.κ.α-1)
+		theoreticalLp = p.degree*(p.degree + 2*(param.α-1.) + param.γ1 + param.γ2 + 2.0)*p
+		@assert Lp ≈ theoreticalLp
+	end
+	for deg = 3:20
+		vh = rand(DunklZernikeExpansions.polyDim(deg) - DunklZernikeExpansions.polyDim(deg-1))
+		vh = [zeros(DunklZernikeExpansions.polyDim(deg-1)) ; vh]
+		for i = DunklZernikeExpansions.polyDim(deg-1)+1:length(vh)
+			if DunklZernikeExpansions.inversepairing(i)[2] != 0
+				vh[i] = 0.
+			end
+		end
+		ph = DZFun(param,vh) #harmonic part
+
+		vm = rand(DunklZernikeExpansions.polyDim(deg-2) - DunklZernikeExpansions.polyDim(deg-3))
+		vm = [zeros(DunklZernikeExpansions.polyDim(deg-3)) ; vm]
+		pm = DZFun([param.γ1,param.γ2,param.α+1.],vm)
+		pm = DunklZernikeExpansions.lower(M(pm,param.α)) #M part
+
+		p = ph + pm
+		@assert p.degree == deg
+		Lp = SL(p,p.κ.α-1)
+		theoreticalLp = p.degree*(p.degree + 2*(param.α-1.) + param.γ1 + param.γ2 + 2.0)*p
+		@assert Lp ≈ theoreticalLp
+	end
+end
+
+# Test commutation property
+
+for param in parameters
+	f = DZFun(param,d,v)
+	α = randn()
+	Dunklx1(SL(f,α-1)) - SL(Dunklx1(f),α) ≈ (2*α+f.κ.γ1+f.κ.γ2+2-1)*Dunklx1(f)
 end
